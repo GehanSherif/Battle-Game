@@ -19,6 +19,9 @@ windowinput* wipInput = NULL;
 static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	
 	switch(msg) {
+	  case WM_CLOSE:
+		exit(0);
+		break;
 	  case WM_LBUTTONDOWN:
         if(wipInput != NULL) {
             wipInput->SetMouseState(hwnd, LEFT_BUTTON, BUTTON_DOWN, LOWORD(lParam), HIWORD(lParam));

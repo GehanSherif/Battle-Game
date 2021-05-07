@@ -207,7 +207,7 @@ void Battle::ImportInputFile()
 	BCastle.SetmatAttack(stoi(N));
 
 
-	//Getting second line (Castle)
+	//Getting second line (Num of Enemies)
 	getline(fin, alldata);
 	stream.str(alldata);
 	getline(stream, M, ' ');
@@ -229,10 +229,10 @@ void Battle::ImportInputFile()
 
 		if (TYP == "0")
 			enemy= new Fighter (stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
-		else if (TYP == "2")
-			enemy = new Freezer(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
-		else
+		else if (TYP == "1")
 			enemy = new Healer (stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
+		else
+			enemy = new Freezer(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
 		Q_Inactive.enqueue(enemy);
 	}
 }

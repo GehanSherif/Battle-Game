@@ -5,8 +5,8 @@ int main()
 {
 	::ShowWindow(::GetConsoleWindow(), SW_HIDE);
 	Battle* pGameBattle = new Battle;
-	pGameBattle->RunSimulation();
-	
+	//pGameBattle->RunSimulation();
+	pGameBattle->ImportInputFile();
 	delete pGameBattle;
 	
 	return 0;

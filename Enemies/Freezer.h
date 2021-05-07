@@ -3,10 +3,10 @@
 class Freezer :
     public Enemy
 {
-public:
-
-
 private:
+
+
+public:
     Freezer(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod, int d = MaxDistance);
 
 };

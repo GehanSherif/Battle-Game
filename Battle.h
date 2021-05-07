@@ -49,6 +49,7 @@ public:
 	void Just_A_Demo();	//just to show a demo and should be removed in phase1 1 & 2
 	void Demo_UpdateEnemies();	//Randomly update enemies distance/status (for demo purposes)
 
+	void ImportInputFile();
 	//
 	// TODO: Add More Member Functions As Needed
 	//

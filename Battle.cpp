@@ -1,5 +1,12 @@
 #include "Battle.h"
 #include <time.h>
+#include <fstream>
+#include <sstream>
+#include "Enemies\Fighter.h"
+#include "Enemies\Freezer.h"
+#include "Enemies/Healer.h"
+#include <string>
+using namespace std;
 
 Battle::Battle()
 {	
@@ -178,5 +185,49 @@ void Battle::Demo_UpdateEnemies()
 
 			break;
 		}
+	}
+}
+
+void Battle::ImportInputFile()
+{
+	ifstream fin;
+	fin.open("InputFile.text");
+	string alldata, CH, N, CP, M, ID, TYP, AT, H, POW, RLD, SPD;
+	int i = 0;
+	while (getline(fin, alldata))
+	{
+		Enemy* enemy;
+		stringstream str(alldata);
+		if (i == 0)
+		{
+			getline(str, CH, ' ');
+			getline(str, N, ' ');
+			getline(str, CP, ' ');
+			BCastle.SetHealth(stoi(CH));
+			BCastle.SetcasltePower(stoi(CP));
+			BCastle.SetmatAttack(stoi(N));
+		}
+		else if (i == 1)
+		{
+			getline(str, M, ' ');
+		}
+		else
+		{
+			getline(str, ID, ' ');
+			getline(str, TYP, ' ');
+			getline(str, AT, ' ');
+			getline(str, H, ' ');
+			getline(str, POW, ' ');
+			getline(str, RLD, ' ');
+			getline(str, SPD, ' ');
+			if (TYP == "0")
+				enemy= new Fighter(stoi(ID), FIGHTER, stoi(AT), stoi(H), stoi(POW), stoi(RLD), stoi(SPD));
+			else if (TYP == "2")
+				enemy = new Freezer(stoi(ID), FREEZER, stoi(AT), stoi(H), stoi(POW), stoi(RLD), stoi(SPD));
+			else
+				enemy = new Healer(stoi(ID), HEALER, stoi(AT), stoi(H), stoi(POW), stoi(RLD), stoi(SPD));
+			Q_Inactive.enqueue(enemy);
+		}
+		i++;
 	}
 }

@@ -15,6 +15,11 @@ public:
 	void SetHealth(double h);
 	double GetHealth() const;
 
+	void SetmatAttack(int n);
+	int GetmatAttack() const;
+
+	void SetcasltePower(double POW);
+	double GetcastlePower() const;
 	//
 	// TODO: Add More Member Functions As Needed
 	//

@@ -3,6 +3,8 @@
 class Castle
 {
 	double Health;
+	int matAttack; //Max number of enemies a castle can attack at any time step
+	double castlePower;
 
 	//
 	// TODO: Add More Data Members As Needed

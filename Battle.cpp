@@ -42,9 +42,7 @@ void Battle::RunSimulation()
 		break;
 	case MODE_DEMO:
 		Just_A_Demo();
-
 	}
-
 	delete pGUI;
 	
 }

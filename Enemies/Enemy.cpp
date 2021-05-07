@@ -6,6 +6,13 @@ Enemy::Enemy(int id, int arrTime, int d):ID(id),ArrvTime(arrTime)
 	SetDistance(d);
 }
 
+Enemy::Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod, int d)
+	: ID(id), ArrvTime(arrTime), health(enemyHealth), power(enemyPower), speed(enemySpeed), reloadPeriod(relPeriod)
+{
+	SetDistance(d);
+
+}
+
 Enemy::~Enemy()
 {
 }

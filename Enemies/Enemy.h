@@ -14,30 +14,40 @@ protected:
 	const int ArrvTime;	//arrival time (time it starts to join battle)
 
 	ENMY_STATUS status;	    //status of the enemy (inactive, inactive, frosted, killed)
-	int Distance;	//Horizontal distance between enemy & the tower of its region
-	                //Always positive (ranges from 2 to 60)
-	double Health;	//Enemy health
 
-	
-	//
-	// TODO: Add More Data Members As Needed
-	//
+	int Distance;	//Horizontal distance between enemy & the tower of its region;Always positive (ranges from 2 to 60)
+
+	double health;	//Enemy health
+	double speed;	//Enemy speed
+	double power;	//Enemy Power
+
+	int reloadPeriod;	//Time an Enemy takes to reload
+	int firstShotTime;	//Time at which an Enemy was first shot by the castle
+	int killedTime;		//Time at which an Enemy was killed
+
+	bool Freezed;	//1 if an enemy is freezed and 0 otherwise
+
 
 public:
 	Enemy(int id, int arrTime, int d = MaxDistance);
-	virtual ~Enemy();
+	Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int ReloadPeriod, int d = MaxDistance);
 
-	int Enemy::GetID() const;
-	ENMY_STATUS GetStatus() const;
-	void SetStatus(ENMY_STATUS);
-	
-	void DecrementDist();
-
-	void SetDistance(int );
-	int GetDistance() const;
+	int GetID() const;
 
 	int GetArrvTime() const;
 
+	ENMY_STATUS GetStatus() const;
+	void SetStatus(ENMY_STATUS);
+	
+	void SetDistance(int );
+	int GetDistance() const;
+
+	void DecrementDist();
+	bool isDead() const;
+
+
+
+	virtual ~Enemy();
 
 	// Virtual Functions: ----------------
 

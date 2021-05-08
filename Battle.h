@@ -12,6 +12,7 @@ private:
 	GUI* pGUI;
 	Castle BCastle;
 	int EnemyCount;	//the actual number of enemies in the game
+	int FighterCount, FreezerCount, HealerCount;
 	int ActiveCount, FrostedCount, KilledCount;	//no. of enemies (Active, Frosted, killed so far)
 	int CurrentTimeStep;
 	//Enemy * BEnemiesForDraw[MaxEnemyCount]; // This Array of Pointers is used for drawing elements in the GUI
@@ -23,6 +24,7 @@ private:
 
 	Queue<Enemy*> Q_Inactive;		//Queue of inactive enemies
 
+	
 
 	/// ==> 
 	//	DEMO-related members. Should be removed in phases 1&2

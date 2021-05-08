@@ -14,8 +14,11 @@ Battle::Battle()
 	KilledCount = 0;
 	ActiveCount = 0;
 	FrostedCount = 0;
-	DemoListCount = 0;
+	DemoListCount =	0;
 	CurrentTimeStep = 0;
+	FighterCount = 0;
+	FreezerCount = 0;
+	HealerCount = 0;
 	pGUI = NULL;
 }
 
@@ -200,7 +203,7 @@ void Battle::ImportInputFile()
 	getline(fin, alldata);
 	stream.str(alldata);
 	getline(stream, CH, ' ');
-	getline(stream, N, ' ');
+	getline(stream, N,  ' ');
 	getline(stream, CP, ' ');
 	BCastle.SetHealth(stoi(CH));
 	BCastle.SetcasltePower(stoi(CP));
@@ -228,11 +231,21 @@ void Battle::ImportInputFile()
 		getline(stream, SPD, ' ');
 
 		if (TYP == "0")
-			enemy= new Fighter (stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
+		{
+			enemy = new Fighter(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
+			FighterCount++;
+		}
 		else if (TYP == "1")
-			enemy = new Healer (stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
+		{
+			enemy = new Healer(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
+			HealerCount++;
+		}
 		else
+		{
 			enemy = new Freezer(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
+			FreezerCount++;
+		}
+		EnemyCount++;
 		Q_Inactive.enqueue(enemy);
 	}
 }

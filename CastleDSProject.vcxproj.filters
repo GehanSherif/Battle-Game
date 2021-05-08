@@ -237,6 +237,9 @@
     <ClInclude Include="Enemies\Freezer.h">
       <Filter>Enemies</Filter>
     </ClInclude>
+    <ClInclude Include="PriorityQueue.h">
+      <Filter>Generic_DS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

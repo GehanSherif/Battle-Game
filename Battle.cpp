@@ -92,7 +92,7 @@ void Battle::Just_A_Demo()
 	}	
 
 	AddAllListsToDrawingList();
-	pGUI->UpdateInterface(CurrentTimeStep);	//upadte interface to show the initial case where all enemies are still inactive
+	//pGUI->UpdateInterface(CurrentTimeStep);	//upadte interface to show the initial case where all enemies are still inactive
 
 	pGUI->waitForClick();
 	
@@ -105,7 +105,7 @@ void Battle::Just_A_Demo()
 
 		pGUI->ResetDrawingList();
 		AddAllListsToDrawingList();
-		pGUI->UpdateInterface(CurrentTimeStep);
+		//pGUI->UpdateInterface(CurrentTimeStep);
 		Sleep(250);
 	}		
 }
@@ -114,7 +114,7 @@ void Battle::Simulator()
 {
 	ImportInputFile(); //Calling input file
 	AddAllListsToDrawingList();
-	pGUI->UpdateInterface(CurrentTimeStep);	//upadte interface to show the initial case where all enemies are still inactive
+	pGUI->UpdateInterface(CurrentTimeStep, BCastle.GetHealth());	//upadte interface to show the initial case where all enemies are still inactive
 
 	pGUI->waitForClick();
 	BCastle.GetHealth();
@@ -125,10 +125,9 @@ void Battle::Simulator()
 		ActivateEnemiesSimulator();
 
 		RunSimulation_Once();	//Update Simulation
-		pGUI->DrawMessage("Hello", 10, 600);
 		pGUI->ResetDrawingList();
 		AddAllListsToDrawingList();
-		pGUI->UpdateInterface(CurrentTimeStep);
+		pGUI->UpdateInterface(CurrentTimeStep,BCastle.GetHealth());
 		pGUI->waitForClick();
 	}
 

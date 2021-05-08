@@ -252,10 +252,11 @@ void GUI::UpdateStatusBar(int CurrentTimeStep)
 		PrintMessage(strTimestep);
 }
 
-void GUI::UpdateInterface(int CurrentTimeStep) 
+void GUI::UpdateInterface(int CurrentTimeStep,double CH) 
 {
 	ClearDrawingArea();
 	UpdateStatusBar(CurrentTimeStep);
+	DrawMessage(to_string(CH),10,100);
 	DrawCastleArea();
 	DrawAllItems();
 }

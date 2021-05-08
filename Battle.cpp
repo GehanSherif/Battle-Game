@@ -57,6 +57,7 @@ void Battle::RunSimulation()
 	}
 	delete pGUI;
 	
+	
 }
 
 
@@ -116,6 +117,7 @@ void Battle::Simulator()
 	pGUI->UpdateInterface(CurrentTimeStep);	//upadte interface to show the initial case where all enemies are still inactive
 
 	pGUI->waitForClick();
+	BCastle.GetHealth();
 
 	while (KilledCount < EnemyCount)	//as long as some enemies are alive (should be updated in next phases)
 	{
@@ -123,11 +125,11 @@ void Battle::Simulator()
 		ActivateEnemiesSimulator();
 
 		RunSimulation_Once();	//Update Simulation
-
+		pGUI->DrawMessage("Hello", 10, 600);
 		pGUI->ResetDrawingList();
 		AddAllListsToDrawingList();
 		pGUI->UpdateInterface(CurrentTimeStep);
-		Sleep(250);
+		pGUI->waitForClick();
 	}
 
 }

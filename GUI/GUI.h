@@ -98,11 +98,11 @@ public:
 
 	// Output Functions  ---------------------------
 	void PrintMessage(string msg) const; // prints a message in the status bar
+	void DrawMessage(string msg, int x, int y);
 	void UpdateStatusBar(int TimeStep);	//prints info on status bar. Info includes timestep and other enemies info as illustrated in project doc
 	void UpdateInterface(int TimeStep);
 	void AddToDrawingList(const Enemy*);	//Adds a new enemy to the drawing queue
 	void ResetDrawingList();		//resets drawing list (should be called every timestep after drawing)
-
 	PROG_MODE getGUIMode() const;			//returns the mode of the program
 
 };

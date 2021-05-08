@@ -14,6 +14,7 @@ Enemy::Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpee
 
 }
 
+
 Enemy::~Enemy()
 {
 }
@@ -21,6 +22,16 @@ Enemy::~Enemy()
 int Enemy::GetID() const
 {
 	return ID;
+}
+
+void Enemy::setID(int ID)
+{
+	this->ID = ID;
+}
+
+void Enemy::setArrvTime(int ATime)
+{
+	ArrvTime = ATime;
 }
 
 

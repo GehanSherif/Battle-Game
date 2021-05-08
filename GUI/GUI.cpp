@@ -75,6 +75,10 @@ void GUI::PrintMessage(string msg) const	//Prints a message on status bar
 	pWind->DrawString(10, WindHeight - (int) (StatusBarHeight/1.5), msg); // You may need to change these coordinates later 
 	                                                                      // to be able to write multi-line
 }
+void GUI::DrawMessage(string msg, int x, int y)
+{
+	pWind->DrawString(x, y, msg);
+}
 //////////////////////////////////////////////////////////////////////////////////////////
 void GUI::DrawString(const int iX, const int iY, const string Text)
 {

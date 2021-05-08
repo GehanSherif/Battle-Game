@@ -114,20 +114,20 @@ void Battle::Simulator()
 {
 	ImportInputFile(); //Calling input file
 	AddAllListsToDrawingList();
-	pGUI->UpdateInterface(CurrentTimeStep, BCastle.GetHealth());	//upadte interface to show the initial case where all enemies are still inactive
+	pGUI->UpdateInterface(CurrentTimeStep, BCastle.GetHealth(), BCastle.IsFrosted(), KilledCount,
+		ActiveCount, FrostedCount, FighterCount, FreezerCount, HealerCount);	//upadte interface to show the initial case where all enemies are still inactive
 
 	pGUI->waitForClick();
-	BCastle.GetHealth();
 
 	while (KilledCount < EnemyCount)	//as long as some enemies are alive (should be updated in next phases)
 	{
 		CurrentTimeStep++;
 		ActivateEnemiesSimulator();
-
 		RunSimulation_Once();	//Update Simulation
 		pGUI->ResetDrawingList();
 		AddAllListsToDrawingList();
-		pGUI->UpdateInterface(CurrentTimeStep,BCastle.GetHealth());
+		pGUI->UpdateInterface(CurrentTimeStep,BCastle.GetHealth(),BCastle.IsFrosted(), KilledCount, 
+			ActiveCount, FrostedCount, FighterCount, FreezerCount, HealerCount );
 		pGUI->waitForClick();
 	}
 

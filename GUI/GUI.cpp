@@ -252,11 +252,25 @@ void GUI::UpdateStatusBar(int CurrentTimeStep)
 		PrintMessage(strTimestep);
 }
 
-void GUI::UpdateInterface(int CurrentTimeStep,double CH) 
+void GUI::UpdateInterface(int CurrentTimeStep,double CH, bool Cfrosted, int KilledCount,
+	int ActiveCount, int FrostedCount, int FighterCount, int FreezerCount, int HealerCount)
 {
 	ClearDrawingArea();
 	UpdateStatusBar(CurrentTimeStep);
-	DrawMessage(to_string(CH),10,100);
+	pWind->DrawString(300, 525, "Current Time Step: "+ to_string(CurrentTimeStep));
+	pWind->DrawString(300, 545, "Current Castle Health: "+ to_string(CH));
+	string IsFrosted;
+	if (Cfrosted)
+		IsFrosted = "is frosted";
+	else
+		IsFrosted = "is not frosted";
+	pWind->DrawString(300, 565, "The Castle " + IsFrosted);
+	pWind->DrawString(300, 585, "no. of Killed Enemies: " + to_string(KilledCount));
+	pWind->DrawString(300, 605, "no. of Active Enemies: " + to_string(ActiveCount));
+	pWind->DrawString(600, 525, "no. of Frosted Enemies: " + to_string(FrostedCount));
+	pWind->DrawString(600, 545, "no. of Fighter Enemies: " + to_string(FighterCount));
+	pWind->DrawString(600, 565, "no. of Freezer Enemies: " + to_string(FreezerCount));
+	pWind->DrawString(600, 585, "no. of Healer Enemies: " + to_string(HealerCount));
 	DrawCastleArea();
 	DrawAllItems();
 }

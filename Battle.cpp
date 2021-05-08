@@ -293,6 +293,7 @@ void Battle::ImportInputFile()
 	getline(fin, alldata);
 	stream.str(alldata);
 	getline(stream, M, ' ');
+	EnemyCount = stoi(M);
 
 	//Getting the rest of lines (Enemies)
 	while (getline(fin, alldata))
@@ -316,13 +317,13 @@ void Battle::ImportInputFile()
 		}
 		else if (TYP == "1")
 		{
-			enemy = new Enemy(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
+			enemy = new Healer(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
 			enemy->setType(1);
 			HealerCount++;
 		}
 		else
 		{
-			enemy = new Enemy(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
+			enemy = new Freezer(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
 			enemy->setType(2);
 			FreezerCount++;
 		}

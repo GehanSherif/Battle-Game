@@ -308,6 +308,7 @@
     <ClInclude Include="Generic_DS\Queue.h" />
     <ClInclude Include="GUI\GUI.h" />
     <ClInclude Include="PriorityQueue.h" />
+    <ClInclude Include="TreeNode.h" />
     <ClInclude Include="Simulator.h" />
     <ClInclude Include="StackADT.h" />
   </ItemGroup>

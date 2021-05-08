@@ -1,6 +1,10 @@
 #pragma once
 
 #include "Enemies\Enemy.h"
+#include "Enemies\Freezer.h"
+#include "Enemies\Healer.h"
+#include "Enemies\Fighter.h"
+#include "ArrayStack.h";
 #include "Castle\Castle.h"
 #include "Generic_DS\Queue.h"
 #include "GUI\GUI.h"
@@ -23,7 +27,10 @@ private:
 											// then pass the pointers list to the GUI function
 
 	Queue<Enemy*> Q_Inactive;		//Queue of inactive enemies
-
+	Queue<Freezer*> Q_ActiveF;      //Queue of Active Freezers
+	ArrayStack<Healer*> S_ActiveH;  //Stack of Active Healers
+	Queue<Enemy*> Q_Frosted;       //Queue of Frosted Enemies
+	Queue<Enemy*> Q_Killed;        //Queue of killed Enemies
 	
 
 	/// ==> 

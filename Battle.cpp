@@ -120,9 +120,9 @@ void Battle::Simulator()
 	while (KilledCount < EnemyCount)	//as long as some enemies are alive (should be updated in next phases)
 	{
 		CurrentTimeStep++;
-		ActivateEnemies();
+		ActivateEnemiesSimulator();
 
-		RunSimulation_Once();	//Randomly update enemies distance/status (for demo purposes only)
+		RunSimulation_Once();	//Update Simulation
 
 		pGUI->ResetDrawingList();
 		AddAllListsToDrawingList();
@@ -137,9 +137,38 @@ void Battle::AddAllListsToDrawingList()
 {	
 	//Add inactive queue to drawing list
 	int InactiveCount;
+	int ActiveFreezerCount;
+	int ActiveHealerCount;
+
+	//Inactive
 	Enemy* const * EnemyList = Q_Inactive.toArray(InactiveCount);
 	for(int i=0; i<InactiveCount; i++)
 		pGUI->AddToDrawingList(EnemyList[i]);
+
+	//Freezers
+	Freezer* const* FreezerList = Q_ActiveF.toArray(ActiveFreezerCount);
+	for (int i = 0; i < ActiveFreezerCount; i++)
+		pGUI->AddToDrawingList(FreezerList[i]);
+	
+	//Healers
+	ActiveHealerCount = S_ActiveH.getCount();
+	Healer** HealerList = new Healer*[ActiveHealerCount];
+	HealerList = S_ActiveH.toArray();
+	for (int i = 0; i < ActiveHealerCount; i++)
+		pGUI->AddToDrawingList(HealerList[i]);
+
+	//Frosted
+	Enemy* const* FrostedList = Q_Frosted.toArray(FrostedCount);
+	for (int i = 0; i < FrostedCount; i++)
+		pGUI->AddToDrawingList(FrostedList[i]);
+
+	//Killed
+	Enemy* const* KilledList = Q_Killed.toArray(KilledCount);
+	for (int i = 0; i < KilledCount; i++)
+		pGUI->AddToDrawingList(KilledList[i]);
+
+
+
 
 	//Add other lists to drawing list
 	//TO DO
@@ -174,7 +203,18 @@ void Battle::ActivateEnemiesSimulator()
 
 		Q_Inactive.dequeue(pE);	//remove enemy from the queue
 		pE->SetStatus(ACTV);	//make status active
-		//AddtoDemoList(pE);		//move it to demo list (for demo purposes)
+		if(pE->getType() == 0)
+		{ }
+		else if (pE->getType() == 1)
+		{
+			Healer* pH = dynamic_cast<Healer*>(pE);
+			S_ActiveH.push(pH);
+		}
+		else if (pE->getType() == 2)
+		{
+			Freezer* pF = dynamic_cast<Freezer*>(pE);
+			Q_ActiveF.enqueue(pF);
+		}
 	}
 }
 
@@ -277,13 +317,13 @@ void Battle::ImportInputFile()
 		}
 		else if (TYP == "1")
 		{
-			enemy = new Healer(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
+			enemy = new Enemy(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
 			enemy->setType(1);
 			HealerCount++;
 		}
 		else
 		{
-			enemy = new Freezer(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
+			enemy = new Enemy(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
 			enemy->setType(2);
 			FreezerCount++;
 		}
@@ -294,54 +334,94 @@ void Battle::ImportInputFile()
 
 void Battle::RunSimulation_Once()
 {
-	ActivateEnemies();
 	Enemy* pE;
+	Healer* pH;
+	Freezer* pF;
 	int freezedFightersNo = 0, freezedHealersNo = 0, freezedFreezersNo = 0, killedActiveEnemiesNo = 0, defrostedEnemies = 0, killedFrostedEnemies = 0;
-	for (int i = 0; i < DemoListCount; i++)
+	int cH = S_ActiveH.getCount();
+	int cF = Q_ActiveF.getC();
+
+	//For each enemy type, pick two active enemies that are on top of list and
+	//freeze them.
+
+	for (int i = 0; i < 2 ; i++)
 	{
-		pE = DemoList[i];
-		switch (pE->GetStatus())
+		if (!(Q_ActiveF.isEmpty()))
 		{
-		case ACTV:
-			pE->DecrementDist();    //move the enemy towards the castle
-
-			if (freezedFightersNo < 2 && pE->getType() == 0)
-			{
-				FreezeEnemy(pE);
-				freezedFightersNo++;
-			}
-			else if (freezedHealersNo < 2 && pE->getType() == 1)
-			{
-				FreezeEnemy(pE);
-				freezedHealersNo++;
-			}
-			else if (freezedFreezersNo < 2 && pE->getType() == 2)
-			{
-				FreezeEnemy(pE);
-				freezedFreezersNo++;
-			}
-			else if (killedActiveEnemiesNo = 0)
-			{
-				KillEnemy(pE);
-				killedActiveEnemiesNo++;
-			}
-			break;
-
-
-		case FRST:
-			if (defrostedEnemies < 2)
-			{
-				DefrostEnemy(pE);
-				defrostedEnemies++;
-			}
-			else if (killedFrostedEnemies = 0)
-			{
-				KillEnemy(pE);
-				killedFrostedEnemies++;
-			}
-			break;
+			Q_ActiveF.dequeue(pF);
+			FreezeEnemy(pF);
+			Q_Frosted.enqueue(pF);
+			freezedFreezersNo++;
+		}
+		if (!(S_ActiveH.isEmpty()))
+		{
+			S_ActiveH.pop(pH);
+			FreezeEnemy(pH);
+			Q_Frosted.enqueue(pH);
+			freezedHealersNo++;
 		}
 	}
+
+	//iv. Pick two previously frosted enemies and return them back to their normal
+	//status.
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (!(Q_Frosted.isEmpty()))
+		{
+			Q_Frosted.dequeue(pE);
+			//Healer
+			if (dynamic_cast<Healer*>(pE) != nullptr)
+			{
+				pH = dynamic_cast<Healer*>(pE);
+				DefrostEnemy(pH);
+				S_ActiveH.push(pH);
+			}
+			//Freezer
+			else if (dynamic_cast<Freezer*>(pE) != nullptr)
+			{
+				pF = dynamic_cast<Freezer*>(pE);
+				DefrostEnemy(pF);
+				Q_ActiveF.enqueue(pF);
+			}
+		}
+	}
+
+	//v. Kill one active enemy and one frosted enemy.
+	//1- Active Enemy
+	int x = rand() % 3;
+	if (x == 0) //kill Active Fighter
+	{
+
+	}
+	else if (x == 1) //kill active freezer
+	{
+		if (!(Q_ActiveF.isEmpty()))
+		{
+			Q_ActiveF.dequeue(pF);
+			KillEnemy(pF);
+			Q_Killed.enqueue(pF);
+		}
+	}
+	else if (x == 2) //kill active Healer
+	{
+		if (!(S_ActiveH.isEmpty()))
+		{
+			S_ActiveH.pop(pH);
+			KillEnemy(pH);
+			Q_Killed.enqueue(pH);
+		}
+	}
+	//2- Frosted Enemy
+	if (!(Q_Frosted.isEmpty()))
+	{
+		Q_Frosted.dequeue(pE);
+		KillEnemy(pE);
+		Q_Killed.enqueue(pE);
+	}
+	
+
+
 }
 
 void Battle::FreezeEnemy(Enemy* pE)

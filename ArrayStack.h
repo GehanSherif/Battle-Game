@@ -19,10 +19,11 @@ private:
 	T* items;		// Array of stack items
 	int top;                   // Index to top of stack
 	const int STACK_SIZE;
+	int count=0;
 
 public:
 
-	ArrayStack(int MaxSize) : STACK_SIZE(MaxSize)
+	ArrayStack() : STACK_SIZE(2000)
 	{
 		items = new T[STACK_SIZE];
 		top = -1;
@@ -39,6 +40,7 @@ public:
 
 		top++;
 		items[top] = newEntry;
+		count++;
 		return true;
 	}  // end push
 
@@ -48,6 +50,7 @@ public:
 
 		TopEntry = items[top];
 		top--;
+		count--;
 		return true;
 	}  // end pop
 
@@ -59,9 +62,27 @@ public:
 		return true;
 	}  // end peek
 
+	int getCount()
+	{
+		return count;
+	}
+
 	T* toArray()
 	{
-		if(!isEmpty)
+		T* arr = new T[count];
+		if (isEmpty())
+			return nullptr;
+		else
+		{
+			for (int i = 0; i < count; i++)
+			{
+				T poped;
+				pop(poped);
+				arr[i] = poped;
+			}
+		}
+		return arr;
+
 	}
 
 }; // end ArrayStack

@@ -51,13 +51,14 @@ private :
 	
 	Node<T>* backPtr;
 	Node<T>* frontPtr;
+	int c = 0;
 public :
 	Queue();	
 	bool isEmpty() const ;
 	bool enqueue(const T& newEntry);
 	bool dequeue(T& frntEntry);  
 	bool peekFront(T& frntEntry)  const;
-	
+	int getC();
 	//toArray function to be used ONLY when drawing the queue items
 	const T* toArray(int& count);	//returns array of T (array of items)
 
@@ -96,6 +97,12 @@ bool Queue<T>::isEmpty() const
 		return false;
 }
 
+template <typename T>
+int Queue<T>::getC()
+{
+	return c;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /*Function:enqueue
@@ -115,6 +122,7 @@ bool Queue<T>::enqueue( const T& newEntry)
 	else
 		backPtr->setNext(newNodePtr); // The queue was not empty
 	backPtr = newNodePtr; // New node is at back
+	c++;
 	return true ;
 } // end enqueue
 
@@ -144,7 +152,7 @@ bool Queue<T>:: dequeue(T& frntEntry)
 		
 	// Free memory reserved by the dequeued node
 	delete nodeToDeletePtr;
-
+	c--;
 	return true;
 
 }

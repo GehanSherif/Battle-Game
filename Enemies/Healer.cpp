@@ -5,3 +5,7 @@ Healer::Healer(int id, int arrTime, int enemyHealth, int enemyPower, int enemySp
 {
 
 }
+
+//Healer::Healer()
+//{
+//}

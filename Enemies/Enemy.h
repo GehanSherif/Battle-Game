@@ -10,8 +10,8 @@ class Enemy
 {
 
 protected:
-	const int ID;         //Each enemy has a unique ID (sequence number)
-	const int ArrvTime;	//arrival time (time it starts to join battle)
+	int ID;         //Each enemy has a unique ID (sequence number)
+	int ArrvTime;	//arrival time (time it starts to join battle)
 
 	ENMY_STATUS status;	    //status of the enemy (inactive, inactive, frosted, killed)
 
@@ -31,9 +31,9 @@ protected:
 public:
 	Enemy(int id, int arrTime, int d = MaxDistance);
 	Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int ReloadPeriod, int d = MaxDistance);
-
 	int GetID() const;
-
+	void setID(int ID);
+	void setArrvTime(int ATime);
 	int GetArrvTime() const;
 
 	ENMY_STATUS GetStatus() const;

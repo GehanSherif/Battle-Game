@@ -243,6 +243,13 @@
     <ClInclude Include="TreeNode.h">
       <Filter>Generic_DS</Filter>
     </ClInclude>
+    <ClInclude Include="StackADT.h">
+      <Filter>Generic_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrayStack.h">
+      <Filter>Generic_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="Simulator.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

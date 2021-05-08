@@ -26,7 +26,7 @@ protected:
 	int killedTime;		//Time at which an Enemy was killed
 
 	bool Freezed;	//1 if an enemy is freezed and 0 otherwise
-
+	int type;
 
 public:
 	Enemy(int id, int arrTime, int d = MaxDistance);
@@ -41,8 +41,10 @@ public:
 	
 	void SetDistance(int );
 	int GetDistance() const;
-
+	void setType(int);
+	int getType();
 	void DecrementDist();
+	void DecrementDist(int);
 	bool isDead() const;
 
 

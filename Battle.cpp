@@ -253,7 +253,7 @@ void Battle::ImportInputFile()
 	getline(fin, alldata);
 	stream.str(alldata);
 	getline(stream, M, ' ');
-
+	EnemyCount = stoi(M);
 
 	//Getting the rest of lines (Enemies)
 	while (getline(fin, alldata))

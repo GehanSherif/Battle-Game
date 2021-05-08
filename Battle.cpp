@@ -52,6 +52,8 @@ void Battle::RunSimulation()
 		break;
 	case MODE_DEMO:
 		Just_A_Demo();
+	case MODE_SIMULATOR:
+		Simulator();
 	}
 	delete pGUI;
 	
@@ -107,6 +109,29 @@ void Battle::Just_A_Demo()
 	}		
 }
 
+void Battle::Simulator()
+{
+	ImportInputFile(); //Calling input file
+	AddAllListsToDrawingList();
+	pGUI->UpdateInterface(CurrentTimeStep);	//upadte interface to show the initial case where all enemies are still inactive
+
+	pGUI->waitForClick();
+
+	while (KilledCount < EnemyCount)	//as long as some enemies are alive (should be updated in next phases)
+	{
+		CurrentTimeStep++;
+		ActivateEnemies();
+
+		RunSimulation_Once();	//Randomly update enemies distance/status (for demo purposes only)
+
+		pGUI->ResetDrawingList();
+		AddAllListsToDrawingList();
+		pGUI->UpdateInterface(CurrentTimeStep);
+		Sleep(250);
+	}
+
+}
+
 //Add enemy lists (inactive, active,.....) to drawing list to be displayed on user interface
 void Battle::AddAllListsToDrawingList()
 {	
@@ -139,9 +164,23 @@ void Battle::ActivateEnemies()
 	}
 }
 
+void Battle::ActivateEnemiesSimulator()
+{
+	Enemy* pE;
+	while (Q_Inactive.peekFront(pE))	//as long as there are more inactive enemies
+	{
+		if (pE->GetArrvTime() > CurrentTimeStep)	//no more arrivals at current time
+			return;
+
+		Q_Inactive.dequeue(pE);	//remove enemy from the queue
+		pE->SetStatus(ACTV);	//make status active
+		//AddtoDemoList(pE);		//move it to demo list (for demo purposes)
+	}
+}
+
 
 //Randomly update enemies distance/status (for demo purposes)
-void Battle::Demo_UpdateEnemies()	
+void Battle::Demo_UpdateEnemies()
 {
 	Enemy* pE;
 	int Prop;
@@ -233,19 +272,104 @@ void Battle::ImportInputFile()
 		if (TYP == "0")
 		{
 			enemy = new Fighter(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
+			enemy->setType(0);
 			FighterCount++;
 		}
 		else if (TYP == "1")
 		{
 			enemy = new Healer(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
+			enemy->setType(1);
 			HealerCount++;
 		}
 		else
 		{
 			enemy = new Freezer(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
+			enemy->setType(2);
 			FreezerCount++;
 		}
 		EnemyCount++;
 		Q_Inactive.enqueue(enemy);
+	}
+}
+
+void Battle::RunSimulation_Once()
+{
+	ActivateEnemies();
+	Enemy* pE;
+	int freezedFightersNo = 0, freezedHealersNo = 0, freezedFreezersNo = 0, killedActiveEnemiesNo = 0, defrostedEnemies = 0, killedFrostedEnemies = 0;
+	for (int i = 0; i < DemoListCount; i++)
+	{
+		pE = DemoList[i];
+		switch (pE->GetStatus())
+		{
+		case ACTV:
+			pE->DecrementDist();    //move the enemy towards the castle
+
+			if (freezedFightersNo < 2 && pE->getType() == 0)
+			{
+				FreezeEnemy(pE);
+				freezedFightersNo++;
+			}
+			else if (freezedHealersNo < 2 && pE->getType() == 1)
+			{
+				FreezeEnemy(pE);
+				freezedHealersNo++;
+			}
+			else if (freezedFreezersNo < 2 && pE->getType() == 2)
+			{
+				FreezeEnemy(pE);
+				freezedFreezersNo++;
+			}
+			else if (killedActiveEnemiesNo = 0)
+			{
+				KillEnemy(pE);
+				killedActiveEnemiesNo++;
+			}
+			break;
+
+
+		case FRST:
+			if (defrostedEnemies < 2)
+			{
+				DefrostEnemy(pE);
+				defrostedEnemies++;
+			}
+			else if (killedFrostedEnemies = 0)
+			{
+				KillEnemy(pE);
+				killedFrostedEnemies++;
+			}
+			break;
+		}
+	}
+}
+
+void Battle::FreezeEnemy(Enemy* pE)
+{
+	pE->SetStatus(FRST);
+	ActiveCount--;
+	FrostedCount++;
+}
+
+void Battle::DefrostEnemy(Enemy* pE)
+{
+	pE->SetStatus(ACTV);
+	ActiveCount++;
+	FrostedCount--;
+}
+
+void Battle::KillEnemy(Enemy* pE)
+{
+	if (pE->GetStatus() == FRST)
+	{
+		pE->SetStatus(KILD);
+		FrostedCount--;
+		KilledCount++;
+	}
+	else if (pE->GetStatus() == ACTV)
+	{
+		pE->SetStatus(KILD);
+		ActiveCount--;
+		KilledCount++;
 	}
 }

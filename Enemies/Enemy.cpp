@@ -10,6 +10,7 @@ Enemy::Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpee
 	: ID(id), ArrvTime(arrTime), health(enemyHealth), power(enemyPower), speed(enemySpeed), reloadPeriod(relPeriod)
 {
 	SetDistance(d);
+	SetStatus(INAC);
 
 }
 
@@ -38,8 +39,9 @@ ENMY_STATUS Enemy::GetStatus() const
 void Enemy::DecrementDist()
 {
 	if (Distance > MinDistance)
-		Distance--;
+		Distance = Distance - speed;
 }
+
 
 void Enemy::SetDistance(int d)
 {
@@ -52,6 +54,16 @@ void Enemy::SetDistance(int d)
 int Enemy::GetDistance() const
 {
 	return Distance;
+}
+
+void Enemy::setType(int E)
+{
+	type = E;
+}
+
+int Enemy::getType()
+{
+	return type;
 }
 
 

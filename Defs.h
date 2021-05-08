@@ -36,7 +36,9 @@ enum PROG_MODE	//mode of the program interface
 	MODE_STEP,	//Step-by-step mode
 	MODE_SLNT,	//Silent mode
 	MODE_DEMO,	//Demo mode (for introductory phase only, should be removed in phases 1&2)
+	MODE_SIMULATOR, //Fourth function
 	MODE_CNT	//number of possible modes
+
 };
 
 

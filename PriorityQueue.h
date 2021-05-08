@@ -12,34 +12,34 @@ private:
 	int queueSize;
 	const int maxElements;
 
-	void swap(int i1, int i2); //done
-	int leftIndex(int i); //done
-	int rightIndex(int i); //done
-	int parentIndex(int i); //done
+	void swap(int i1, int i2); //swaps two nodes based on index
+	int leftIndex(int i); //returns index of left child
+	int rightIndex(int i); //returns index of right child
+	int parentIndex(int i); //returns index of parent
 	
-	void heapifyUp(int i); //done
-	void heapifyDown(int i); //done
+	void heapifyUp(int i); //checks a node towards up
+	void heapifyDown(int i); //checks a node towards down
 
 	
 	
 public:
-	PriorityQueue();  //safe
-	PriorityQueue(int n); //safe
-	PriorityQueue(TreeNode<T>* A, int size); //safe
+	PriorityQueue();  //initializes array size to 100 by default
+	PriorityQueue(int n); //initializes array size to n
+	PriorityQueue(TreeNode<T>* A, int size); //takes already existing array
 	
 
-	bool isEmpty() const; //safe
-	bool insert(T& p, int priority); //safe
+	bool isEmpty() const;
+	bool insert(T& p, int priority); //inserts a new node in tree
 
-	bool peekMax(T& max); //safe
+	bool peekMax(T& max); 
 	bool dequeueMax(T& max);
 	void buildMaxHeap();
 
 	int size() const;
 	
-	void printArr(); //used for testing purposes only;
+	//void printArr(); //used for testing purposes only;
 
-	//only heap sort left
+	
 
 	
 };
@@ -95,7 +95,7 @@ bool PriorityQueue<T>::peekMax(T& max)
 {
 	if (isEmpty())
 		return false;
-	max = arr[1].getVal();
+	max = *(arr[1].getVal());
 	return true;
 }
 
@@ -127,15 +127,15 @@ int PriorityQueue<T>::size() const
 	return queueSize;
 }
 
-template<typename T>
-void PriorityQueue<T>::printArr()
-{
-	for (int i = 1; i <= queueSize; i++)
-	{
-		cout << arr[i].getKey() << " ";
-	}
-	cout << endl;
-}
+//template<typename T>
+//void PriorityQueue<T>::printArr()
+//{
+//	for (int i = 1; i <= queueSize; i++)
+//	{
+//		cout << arr[i].getKey() << " ";
+//	}
+//	cout << endl;
+//}
 
 
  template<typename T>

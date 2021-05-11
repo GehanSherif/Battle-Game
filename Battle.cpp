@@ -11,6 +11,15 @@ using namespace std;
 Battle::Battle()
 {	
 	EnemyCount = 0;
+	ActiveFighter = 0;
+	ActiveHealer = 0;
+	ActiveFreezer = 0;
+	FrostedFighter = 0;
+	FrostedHealer = 0;
+	FrostedFreezer = 0;
+	KilledFighter = 0;
+	KilledFreezer = 0;
+	KilledHealer = 0;
 	KilledCount = 0;
 	ActiveCount = 0;
 	FrostedCount = 0;
@@ -208,6 +217,18 @@ void Battle::ActivateEnemiesSimulator()
 
 		Q_Inactive.dequeue(pE);	//remove enemy from the queue
 		ActiveCount++;
+		if (dynamic_cast<Freezer*>(pE))
+		{
+			ActiveFreezer++;
+		}
+		else if (dynamic_cast<Healer*>(pE))
+		{
+			ActiveHealer++;
+		}
+		else if (dynamic_cast<Fighter*>(pE))
+		{
+			ActiveFighter++;
+		}
 		pE->SetStatus(ACTV);	//make status active
 		if(pE->getType() == 0)
 		{ }
@@ -347,7 +368,40 @@ void Battle::RunSimulation_Once()
 	int cH = S_ActiveH.getCount();
 	int cF = Q_ActiveF.getC();
 
-	//For each enemy type, pick two active enemies that are on top of list and
+	//ii. Move all active enemies of all types according to their speeds and movement
+	//pattern.
+	//1- Moving Fighter
+	{}
+
+	//2- Moving Freezer
+	Queue<Freezer*> TempActiveFreezerQueue;
+	for (int i = 0; i < ActiveFreezer; i++)
+	{
+		Q_ActiveF.dequeue(pF);
+		pF->DecrementDist();
+		TempActiveFreezerQueue.enqueue(pF);
+	}
+	for (int i = 0; i < ActiveFreezer; i++)
+	{
+		TempActiveFreezerQueue.dequeue(pF);
+		Q_ActiveF.enqueue(pF);
+	}
+
+	//3- Moving Healer
+	ArrayStack<Healer*> TempActiveHealerStack;
+	for (int i = 0; i < ActiveHealer; i++)
+	{
+		S_ActiveH.pop(pH);
+		pH->DecrementDist();
+		TempActiveHealerStack.push(pH);
+	}
+	for (int i = 0; i < ActiveHealer; i++)
+	{
+		TempActiveHealerStack.pop(pH);
+		S_ActiveH.push(pH);
+	}
+
+	//iii. For each enemy type, pick two active enemies that are on top of list and
 	//freeze them.
 
 	for (int i = 0; i < 2 ; i++)
@@ -435,6 +489,21 @@ void Battle::FreezeEnemy(Enemy* pE)
 	pE->SetStatus(FRST);
 	ActiveCount--;
 	FrostedCount++;
+	if (dynamic_cast<Freezer*>(pE))
+	{
+		ActiveFreezer--;
+		FrostedFreezer++;
+	}
+	else if (dynamic_cast<Healer*>(pE))
+	{
+		ActiveHealer--;
+		FrostedHealer++;
+	}
+	else if (dynamic_cast<Fighter*>(pE))
+	{
+		ActiveFighter--;
+		FrostedFighter++;
+	}
 }
 
 void Battle::DefrostEnemy(Enemy* pE)
@@ -442,6 +511,21 @@ void Battle::DefrostEnemy(Enemy* pE)
 	pE->SetStatus(ACTV);
 	ActiveCount++;
 	FrostedCount--;
+	if (dynamic_cast<Freezer*>(pE))
+	{
+		ActiveFreezer--;
+		FrostedFreezer++;
+	}
+	else if (dynamic_cast<Healer*>(pE))
+	{
+		ActiveHealer++;
+		FrostedHealer--;
+	}
+	else if (dynamic_cast<Fighter*>(pE))
+	{
+		ActiveFighter++;
+		FrostedFighter--;
+	}
 }
 
 void Battle::KillEnemy(Enemy* pE)
@@ -457,5 +541,21 @@ void Battle::KillEnemy(Enemy* pE)
 		pE->SetStatus(KILD);
 		ActiveCount--;
 		KilledCount++;
+	}
+
+	if (dynamic_cast<Freezer*>(pE))
+	{
+		ActiveFreezer--;
+		KilledFreezer++;
+	}
+	else if (dynamic_cast<Healer*>(pE))
+	{
+		ActiveHealer--;
+		KilledHealer++;
+	}
+	else if (dynamic_cast<Fighter*>(pE))
+	{
+		ActiveFighter--;
+		KilledFighter++;
 	}
 }

@@ -18,6 +18,9 @@ private:
 	int EnemyCount;	//the actual number of enemies in the game
 	int FighterCount, FreezerCount, HealerCount;
 	int ActiveCount, FrostedCount, KilledCount;	//no. of enemies (Active, Frosted, killed so far)
+	int ActiveFighter, ActiveFreezer, ActiveHealer;
+	int FrostedFighter, FrostedHealer, FrostedFreezer;
+	int KilledFighter, KilledFreezer, KilledHealer;
 	int CurrentTimeStep;
 	//Enemy * BEnemiesForDraw[MaxEnemyCount]; // This Array of Pointers is used for drawing elements in the GUI
 								  			// No matter what list type you are using to hold enemies, 

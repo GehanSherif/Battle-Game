@@ -157,23 +157,30 @@ void Battle::AddAllListsToDrawingList()
 	int InactiveCount;
 	int ActiveFreezerCount;
 	int ActiveHealerCount;
+	int ActiveFighterCount;
 
 	//Inactive
 	Enemy* const * EnemyList = Q_Inactive.toArray(InactiveCount);
 	for(int i=0; i<InactiveCount; i++)
 		pGUI->AddToDrawingList(EnemyList[i]);
 
+	//Fighters
+	Fighter* const* FighterList = Q_ActiveFihter.toArray(ActiveFighterCount);
+	for (int i = 0; i < ActiveFighterCount; i++)
+		pGUI->AddToDrawingList(FighterList[i]);
+
 	//Freezers
-	Freezer* const* FreezerList = Q_ActiveF.toArray(ActiveFreezerCount);
+	Freezer* const* FreezerList = Q_ActiveFreezer.toArray(ActiveFreezerCount);
 	for (int i = 0; i < ActiveFreezerCount; i++)
 		pGUI->AddToDrawingList(FreezerList[i]);
-	
+
 	//Healers
-	ActiveHealerCount = S_ActiveH.getCount();
+	ActiveHealerCount = S_ActiveHealer.getCount();
 	Healer** HealerList = new Healer*[ActiveHealerCount];
-	HealerList = S_ActiveH.toArray();
+	HealerList = S_ActiveHealer.toArray();
 	for (int i = 0; i < ActiveHealerCount; i++)
 		pGUI->AddToDrawingList(HealerList[i]);
+
 
 	//Frosted
 	Enemy* const* FrostedList = Q_Frosted.toArray(FrostedCount);
@@ -192,8 +199,8 @@ void Battle::AddAllListsToDrawingList()
 	//TO DO
 	//In next phases, you should add enemies from different lists to the drawing list
 	//For the sake of demo, we will use DemoList
-	for(int i=0; i<DemoListCount; i++)
-		pGUI->AddToDrawingList(DemoList[i]);
+	//for(int i=0; i<DemoListCount; i++)
+	//	pGUI->AddToDrawingList(DemoList[i]);
 }
 
 //check the inactive list and activate all enemies that has arrived
@@ -207,7 +214,7 @@ void Battle::ActivateEnemies()
 				
 		Q_Inactive.dequeue(pE);	//remove enemy from the queue
 		pE->SetStatus(ACTV);	//make status active
-		AddtoDemoList(pE);		//move it to demo list (for demo purposes)
+		//AddtoDemoList(pE);		//move it to demo list (for demo purposes)
 	}
 }
 
@@ -221,30 +228,24 @@ void Battle::ActivateEnemiesSimulator()
 
 		Q_Inactive.dequeue(pE);	//remove enemy from the queue
 		ActiveCount++;
-		if (dynamic_cast<Freezer*>(pE))
-		{
-			ActiveFreezer++;
-		}
-		else if (dynamic_cast<Healer*>(pE))
-		{
-			ActiveHealer++;
-		}
-		else if (dynamic_cast<Fighter*>(pE))
-		{
-			ActiveFighter++;
-		}
 		pE->SetStatus(ACTV);	//make status active
 		if(pE->getType() == 0)
-		{ }
+		{ 
+			ActiveFighter++;
+			Fighter* pFighter = dynamic_cast<Fighter*>(pE);
+			Q_ActiveFihter.insert(pFighter, pFighter->getPriority());
+		}
 		else if (pE->getType() == 1)
 		{
+			ActiveHealer++;
 			Healer* pH = dynamic_cast<Healer*>(pE);
-			S_ActiveH.push(pH);
+			S_ActiveHealer.push(pH);
 		}
 		else if (pE->getType() == 2)
 		{
+			ActiveFreezer++;
 			Freezer* pF = dynamic_cast<Freezer*>(pE);
-			Q_ActiveF.enqueue(pF);
+			Q_ActiveFreezer.enqueue(pF);
 		}
 	}
 }
@@ -367,36 +368,53 @@ void Battle::RunSimulation_Once()
 {
 	Enemy* pE;
 	Healer* pH;
-	Freezer* pF;
+	Freezer* pFreezer;
+	Fighter* pFighter;
 	int freezedFightersNo = 0, freezedHealersNo = 0, freezedFreezersNo = 0, killedActiveEnemiesNo = 0, defrostedEnemies = 0, killedFrostedEnemies = 0;
-	int cH = S_ActiveH.getCount();
-	int cF = Q_ActiveF.getC();
+	int cH = S_ActiveHealer.getCount();
+	int cFreezer = Q_ActiveFreezer.getC();
+	int cFighter = Q_ActiveFihter.size();
 
 	//ii. Move all active enemies of all types according to their speeds and movement
 	//pattern.
+
+
 	//1- Moving Fighter
-	{}
+	PriorityQueue<Fighter*> TempActiveFighterPQ(ActiveFighter);
+	for (int i = 0; i < ActiveFighter; i++)
+	{
+		Q_ActiveFihter.dequeueMax(pFighter);
+		if(pFighter->GetStatus() == ACTV)
+		pFighter->DecrementDist();
+		TempActiveFighterPQ.insert(pFighter, pFighter->getPriority());
+	}
+	for (int i = 0; i < ActiveFighter; i++)
+	{
+		TempActiveFighterPQ.dequeueMax(pFighter);
+		Q_ActiveFihter.insert(pFighter, pFighter->getPriority());
+	}
 
 	//2- Moving Freezer
 	Queue<Freezer*> TempActiveFreezerQueue;
 	for (int i = 0; i < ActiveFreezer; i++)
 	{
-		Q_ActiveF.dequeue(pF);
-		if(pF->GetStatus() == ACTV)
-		pF->DecrementDist();
-		TempActiveFreezerQueue.enqueue(pF);
+		Q_ActiveFreezer.dequeue(pFreezer);
+		if(pFreezer->GetStatus() == ACTV)
+		pFreezer->DecrementDist();
+		TempActiveFreezerQueue.enqueue(pFreezer);
 	}
 	for (int i = 0; i < ActiveFreezer; i++)
 	{
-		TempActiveFreezerQueue.dequeue(pF);
-		Q_ActiveF.enqueue(pF);
+		TempActiveFreezerQueue.dequeue(pFreezer);
+		Q_ActiveFreezer.enqueue(pFreezer);
 	}
+
 
 	//3- Moving Healer
 	ArrayStack<Healer*> TempActiveHealerStack;
 	for (int i = 0; i < ActiveHealer; i++)
 	{
-		S_ActiveH.pop(pH);
+		S_ActiveHealer.pop(pH);
 		if (pH->GetStatus() == ACTV)
 		pH->DecrementDist();
 		TempActiveHealerStack.push(pH);
@@ -404,7 +422,7 @@ void Battle::RunSimulation_Once()
 	for (int i = 0; i < ActiveHealer; i++)
 	{
 		TempActiveHealerStack.pop(pH);
-		S_ActiveH.push(pH);
+		S_ActiveHealer.push(pH);
 	}
 
 	//iii. For each enemy type, pick two active enemies that are on top of list and
@@ -412,16 +430,23 @@ void Battle::RunSimulation_Once()
 
 	for (int i = 0; i < 2 ; i++)
 	{
-		if (!(Q_ActiveF.isEmpty()))
+		if (!(Q_ActiveFihter.isEmpty()))
 		{
-			Q_ActiveF.dequeue(pF);
-			FreezeEnemy(pF);
-			Q_Frosted.enqueue(pF);
+			Q_ActiveFihter.dequeueMax(pFighter);
+			FreezeEnemy(pFighter);
+			Q_Frosted.enqueue(pFighter);
+			freezedFightersNo++;
+		}
+		if (!(Q_ActiveFreezer.isEmpty()))
+		{
+			Q_ActiveFreezer.dequeue(pFreezer);
+			FreezeEnemy(pFreezer);
+			Q_Frosted.enqueue(pFreezer);
 			freezedFreezersNo++;
 		}
-		if (!(S_ActiveH.isEmpty()))
+		if (!(S_ActiveHealer.isEmpty()))
 		{
-			S_ActiveH.pop(pH);
+			S_ActiveHealer.pop(pH);
 			FreezeEnemy(pH);
 			Q_Frosted.enqueue(pH);
 			freezedHealersNo++;
@@ -441,14 +466,20 @@ void Battle::RunSimulation_Once()
 			{
 				pH = dynamic_cast<Healer*>(pE);
 				DefrostEnemy(pH);
-				S_ActiveH.push(pH);
+				S_ActiveHealer.push(pH);
 			}
 			//Freezer
 			else if (dynamic_cast<Freezer*>(pE) != nullptr)
 			{
-				pF = dynamic_cast<Freezer*>(pE);
-				DefrostEnemy(pF);
-				Q_ActiveF.enqueue(pF);
+				pFreezer = dynamic_cast<Freezer*>(pE);
+				DefrostEnemy(pFreezer);
+				Q_ActiveFreezer.enqueue(pFreezer);
+			}
+			else if (dynamic_cast<Fighter*>(pE) != nullptr)
+			{
+				pFighter = dynamic_cast<Fighter*>(pE);
+				DefrostEnemy(pFighter);
+				Q_ActiveFihter.insert(pFighter, pFighter->getPriority());
 			}
 		}
 	}
@@ -458,22 +489,27 @@ void Battle::RunSimulation_Once()
 	int x = rand() % 3;
 	if (x == 0) //kill Active Fighter
 	{
-
+		if (!(Q_ActiveFihter.isEmpty()))
+		{
+			Q_ActiveFihter.dequeueMax(pFighter);
+			KillEnemy(pFighter);
+			Q_Killed.enqueue(pFighter);
+		}
 	}
 	else if (x == 1) //kill active freezer
 	{
-		if (!(Q_ActiveF.isEmpty()))
+		if (!(Q_ActiveFreezer.isEmpty()))
 		{
-			Q_ActiveF.dequeue(pF);
-			KillEnemy(pF);
-			Q_Killed.enqueue(pF);
+			Q_ActiveFreezer.dequeue(pFreezer);
+			KillEnemy(pFreezer);
+			Q_Killed.enqueue(pFreezer);
 		}
 	}
 	else if (x == 2) //kill active Healer
 	{
-		if (!(S_ActiveH.isEmpty()))
+		if (!(S_ActiveHealer.isEmpty()))
 		{
-			S_ActiveH.pop(pH);
+			S_ActiveHealer.pop(pH);
 			KillEnemy(pH);
 			Q_Killed.enqueue(pH);
 		}

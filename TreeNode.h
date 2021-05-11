@@ -3,17 +3,17 @@ template<class T>
 class TreeNode
 {
 private:
-	T* value;
+	T value;
 	int key;
 public:
 	TreeNode();
-	TreeNode(T* val, int k);
+	TreeNode(T val, int k);
 
 	int getKey() const;
 	void setKey(int k);
 
-	T* getVal() const;
-	void setVal(T* val);
+	T getVal() const;
+	void setVal(T val);
 
 	bool operator> (const TreeNode<T>& T) const;
 	bool operator< (const TreeNode<T>& T) const;
@@ -24,11 +24,10 @@ public:
 template<class T>
 inline TreeNode<T>::TreeNode()
 {
-	value = nullptr;
 }
 
 template<class T>
-TreeNode<T>::TreeNode(T* val, int k)
+TreeNode<T>::TreeNode(T val, int k)
 {
 	value = val;
 	key = k;
@@ -47,13 +46,13 @@ void TreeNode<T>::setKey(int k)
 }
 
 template<class T>
-T* TreeNode<T>::getVal() const
+T TreeNode<T>::getVal() const
 {
 	return value;
 }
 
 template<class T>
-inline void TreeNode<T>::setVal(T* val)
+inline void TreeNode<T>::setVal(T val)
 {
 	value = val;
 }

@@ -8,6 +8,7 @@
 #include "Castle\Castle.h"
 #include "Generic_DS\Queue.h"
 #include "GUI\GUI.h"
+#include "PriorityQueue.h"
 
 // it is the controller of the project
 class Battle
@@ -29,11 +30,12 @@ private:
 											// to point to the current active enemies 
 											// then pass the pointers list to the GUI function
 
-	Queue<Enemy*> Q_Inactive;		//Queue of inactive enemies
-	Queue<Freezer*> Q_ActiveF;      //Queue of Active Freezers
-	ArrayStack<Healer*> S_ActiveH;  //Stack of Active Healers
-	Queue<Enemy*> Q_Frosted;       //Queue of Frosted Enemies
-	Queue<Enemy*> Q_Killed;        //Queue of killed Enemies
+	Queue<Enemy*> Q_Inactive;					//Queue of inactive enemies
+	Queue<Freezer*> Q_ActiveFreezer;			//Queue of Active Freezers
+	PriorityQueue<Fighter*> Q_ActiveFihter;		//Priority queue of active Fighters
+	ArrayStack<Healer*> S_ActiveHealer;			//Stack of Active Healers
+	Queue<Enemy*> Q_Frosted;					//Queue of Frosted Enemies
+	Queue<Enemy*> Q_Killed;						//Queue of killed Enemies
 	
 
 	/// ==> 

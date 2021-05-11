@@ -311,6 +311,7 @@ void GUI::AddToDrawingList(Enemy* pE)
 	}
 	else
 		eType = 2;
+
 	pDitem->clr = DrawingColors[eType];
 	/////////////
 	/////////////

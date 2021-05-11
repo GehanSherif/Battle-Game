@@ -19,7 +19,7 @@ private:
 	
 	void heapifyUp(int i); //checks a node towards up
 	void heapifyDown(int i); //checks a node towards down
-
+	void buildMaxHeap();
 	
 	
 public:
@@ -31,13 +31,14 @@ public:
 	bool isEmpty() const;
 	bool insert(T& p, int priority); //inserts a new node in tree
 
-	bool peekMax(T& max); 
+	bool peekMax(T& max) const;
 	bool dequeueMax(T& max);
-	void buildMaxHeap();
 
 	int size() const;
+	const T* toArray(int& count) const;
+
 	
-	//void printArr(); //used for testing purposes only;
+	void printArr(); //used for testing purposes only;
 
 	
 
@@ -60,14 +61,13 @@ PriorityQueue<T>::PriorityQueue(int n) : maxElements(n)
 	 
 }
 
+
 template<typename T>
 PriorityQueue<T>::PriorityQueue(TreeNode<T>* A, int size) : PriorityQueue(size - 1) //location at 0 is ignored
 {
 	queueSize = maxElements;
 	arr = A;
-	printArr();
 	buildMaxHeap();
-	printArr();
 }
 
 template<typename T>
@@ -81,9 +81,9 @@ bool PriorityQueue<T>::isEmpty() const
 template<typename T>
 bool PriorityQueue<T>::insert(T& t, int priority)
 {
-	TreeNode<T>* newNode = new TreeNode<T>(&t, priority);
+	TreeNode<T>* newNode = new TreeNode<T>(t, priority);
 	if (queueSize >= maxElements)
-		return 0;
+		return false;
 
 	arr[++queueSize] = *newNode;
 	heapifyUp(queueSize);
@@ -91,11 +91,11 @@ bool PriorityQueue<T>::insert(T& t, int priority)
 }
 
 template<typename T>
-bool PriorityQueue<T>::peekMax(T& max)
+bool PriorityQueue<T>::peekMax(T& max) const
 {
 	if (isEmpty())
 		return false;
-	max = *(arr[1].getVal());
+	max = arr[1].getVal();
 	return true;
 }
 
@@ -104,7 +104,7 @@ bool PriorityQueue<T>::dequeueMax(T& max)
 {
 	if (isEmpty())
 		return false;
-	max = *(arr[1].getVal());
+	max = arr[1].getVal();
 	arr[1] = arr[queueSize--];
 	heapifyDown(1);
 	return true;
@@ -116,10 +116,7 @@ void PriorityQueue<T>::buildMaxHeap()
 	for (int i = queueSize/2; i > 0; i--)
 	{
 		heapifyDown(i);
-	}
-
-	printArr();
-}
+	}}
 
 template<typename T>
 int PriorityQueue<T>::size() const
@@ -127,15 +124,27 @@ int PriorityQueue<T>::size() const
 	return queueSize;
 }
 
-//template<typename T>
-//void PriorityQueue<T>::printArr()
-//{
-//	for (int i = 1; i <= queueSize; i++)
-//	{
-//		cout << arr[i].getKey() << " ";
-//	}
-//	cout << endl;
-//}
+template<typename T>
+const T* PriorityQueue<T>::toArray(int& count) const
+{
+	count = queueSize;
+	T *array = new T[queueSize];
+	for (int i = 0; i < queueSize; i++)
+	{
+		array[i] = arr[i+1].getVal();
+	}
+	return array;
+}
+
+template<typename T>
+void PriorityQueue<T>::printArr()
+{
+	for (int i = 1; i <= queueSize; i++)
+	{
+		cout << arr[i].getKey() << " ";
+	}
+	cout << endl;
+}
 
 
  template<typename T>
@@ -170,7 +179,6 @@ int PriorityQueue<T>::size() const
 		 swap(i, parentIndex(i));
 		 i = parentIndex(i);
 	 }
-	 printArr();
  }
 
  template<typename T>

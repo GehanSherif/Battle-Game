@@ -378,6 +378,7 @@ void Battle::RunSimulation_Once()
 	for (int i = 0; i < ActiveFreezer; i++)
 	{
 		Q_ActiveF.dequeue(pF);
+		if(pF->GetStatus() == ACTV)
 		pF->DecrementDist();
 		TempActiveFreezerQueue.enqueue(pF);
 	}
@@ -392,6 +393,7 @@ void Battle::RunSimulation_Once()
 	for (int i = 0; i < ActiveHealer; i++)
 	{
 		S_ActiveH.pop(pH);
+		if (pH->GetStatus() == ACTV)
 		pH->DecrementDist();
 		TempActiveHealerStack.push(pH);
 	}

@@ -207,6 +207,7 @@ void Battle::ActivateEnemiesSimulator()
 			return;
 
 		Q_Inactive.dequeue(pE);	//remove enemy from the queue
+		ActiveCount++;
 		pE->SetStatus(ACTV);	//make status active
 		if(pE->getType() == 0)
 		{ }

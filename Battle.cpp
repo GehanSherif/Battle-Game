@@ -519,8 +519,8 @@ void Battle::DefrostEnemy(Enemy* pE)
 	FrostedCount--;
 	if (dynamic_cast<Freezer*>(pE))
 	{
-		ActiveFreezer--;
-		FrostedFreezer++;
+		ActiveFreezer++;
+		FrostedFreezer--;
 	}
 	else if (dynamic_cast<Healer*>(pE))
 	{
@@ -538,30 +538,53 @@ void Battle::KillEnemy(Enemy* pE)
 {
 	if (pE->GetStatus() == FRST)
 	{
-		pE->SetStatus(KILD);
 		FrostedCount--;
 		KilledCount++;
 	}
 	else if (pE->GetStatus() == ACTV)
 	{
-		pE->SetStatus(KILD);
 		ActiveCount--;
 		KilledCount++;
 	}
 
 	if (dynamic_cast<Freezer*>(pE))
 	{
-		ActiveFreezer--;
-		KilledFreezer++;
+		if (pE->GetStatus() == FRST)
+		{
+			FrostedFreezer--;
+			KilledFreezer++;
+		}
+		else
+		{
+			ActiveFreezer--;
+			KilledFreezer++;
+		}
 	}
 	else if (dynamic_cast<Healer*>(pE))
 	{
-		ActiveHealer--;
-		KilledHealer++;
+		if (pE->GetStatus() == FRST)
+		{
+			FrostedHealer--;
+			KilledHealer++;
+		}
+		else
+		{
+			ActiveHealer--;
+			KilledHealer++;
+		}
 	}
 	else if (dynamic_cast<Fighter*>(pE))
 	{
-		ActiveFighter--;
-		KilledFighter++;
+		if (pE->GetStatus() == FRST)
+		{
+			FrostedFighter--;
+			KilledFighter++;
+		}
+		else
+		{
+			ActiveFighter--;
+			KilledFighter++;
+		}
 	}
+	pE->SetStatus(KILD);
 }

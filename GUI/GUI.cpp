@@ -1,4 +1,7 @@
 #include "GUI.h"
+#include "../Enemies/Fighter.h"
+#include "../Enemies/Freezer.h"
+#include "../Enemies/Healer.h"
 #include <time.h>
 #include <cstdlib>
 
@@ -252,10 +255,33 @@ void GUI::UpdateStatusBar(int CurrentTimeStep)
 		PrintMessage(strTimestep);
 }
 
-void GUI::UpdateInterface(int CurrentTimeStep) 
+void GUI::UpdateInterface(int CurrentTimeStep,double CH, bool Cfrosted, int KilledCount,
+	int ActiveCount, int FrostedCount, int ActiveFighter, int ActiveFreezer, int ActiveHealer,
+int FrostedFighter, int FrostedHealer, int FrostedFreezer,
+int KilledFighter, int KilledFreezer, int KilledHealer)
 {
 	ClearDrawingArea();
 	UpdateStatusBar(CurrentTimeStep);
+	pWind->DrawString(100, 525, "Current Time Step: "+ to_string(CurrentTimeStep));
+	pWind->DrawString(100, 545, "Current Castle Health: "+ to_string(CH));
+	string IsFrosted;
+	if (Cfrosted)
+		IsFrosted = "is frosted";
+	else
+		IsFrosted = "is not frosted";
+	pWind->DrawString(100, 565, "The Castle " + IsFrosted);
+	pWind->DrawString(400, 525, "no. of Active Enemies: " + to_string(ActiveCount));
+	pWind->DrawString(400, 545, "no. of Active Fighter: " + to_string(ActiveFighter));
+	pWind->DrawString(400, 565, "no. of Active Freezer: " + to_string(ActiveFreezer));
+	pWind->DrawString(400, 585, "no. of Active Healer: " + to_string(ActiveHealer));
+	pWind->DrawString(700, 525, "no. of Frosted Enemies: " + to_string(FrostedCount));
+	pWind->DrawString(700, 545, "no. of Frosted Fighter: " + to_string(FrostedFighter));
+	pWind->DrawString(700, 565, "no. of Frosted Freezer: " + to_string(FrostedFreezer));
+	pWind->DrawString(700, 585, "no. of Frosted Healer: " + to_string(FrostedHealer));
+	pWind->DrawString(1000, 525, "no. of Killed Enemies: " + to_string(KilledCount));
+	pWind->DrawString(1000, 545, "no. of Killed Fighter: " + to_string(KilledFighter));
+	pWind->DrawString(1000, 565, "no. of Killed Freezer: " + to_string(KilledFreezer));
+	pWind->DrawString(1000, 585, "no. of Killed Healer: " + to_string(KilledHealer));
 	DrawCastleArea();
 	DrawAllItems();
 }
@@ -264,7 +290,7 @@ void GUI::UpdateInterface(int CurrentTimeStep)
 	AddOrderForDrawing: Adds a new item related to the passed Enemy to the drawing list
 */
 
-void GUI::AddToDrawingList(const Enemy* pE)
+void GUI::AddToDrawingList(Enemy* pE)
 {
 	DrawingItem *pDitem=new DrawingItem;
 	pDitem->ID = pE->GetID();
@@ -274,7 +300,17 @@ void GUI::AddToDrawingList(const Enemy* pE)
 	// IMPORTANT [TO DO]
 	// enemy type has been generated randomly here because enemy classes are not written yet
 	// in next phases, to know enemy type, you should apply dynamic_cast to pE pointer
-	int eType = pDitem->ID%ENMY_TYPE_CNT;	
+	int eType;
+	if (dynamic_cast<Fighter*>(pE))
+	{
+		eType = 0;
+	}
+	else if (dynamic_cast<Healer*>(pE))
+	{
+		eType = 1;
+	}
+	else
+		eType = 2;
 	pDitem->clr = DrawingColors[eType];
 	/////////////
 	/////////////

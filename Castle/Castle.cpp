@@ -35,3 +35,12 @@ double Castle::GetcastlePower() const
 {
 	return castlePower;
 }
+
+void Castle::SetFrosted(bool f)
+{
+	frosted = f;
+}
+bool Castle::IsFrosted() const
+{
+	return frosted;
+}

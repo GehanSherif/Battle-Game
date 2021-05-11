@@ -123,10 +123,10 @@ void Battle::Simulator()
 	{
 		CurrentTimeStep++;
 		ActivateEnemiesSimulator();
-		if (CurrentTimeStep != 1)
-		{
+		//if (CurrentTimeStep != 1)
+		//{
 			RunSimulation_Once();	//Update Simulation
-		}
+		//}
 		pGUI->ResetDrawingList();
 		AddAllListsToDrawingList();
 		pGUI->UpdateInterface(CurrentTimeStep, BCastle.GetHealth(), BCastle.IsFrosted(), KilledCount,

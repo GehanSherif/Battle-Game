@@ -1,4 +1,7 @@
 #include "GUI.h"
+#include "../Enemies/Fighter.h"
+#include "../Enemies/Freezer.h"
+#include "../Enemies/Healer.h"
 #include <time.h>
 #include <cstdlib>
 
@@ -279,7 +282,7 @@ void GUI::UpdateInterface(int CurrentTimeStep,double CH, bool Cfrosted, int Kill
 	AddOrderForDrawing: Adds a new item related to the passed Enemy to the drawing list
 */
 
-void GUI::AddToDrawingList(const Enemy* pE)
+void GUI::AddToDrawingList(Enemy* pE)
 {
 	DrawingItem *pDitem=new DrawingItem;
 	pDitem->ID = pE->GetID();
@@ -289,7 +292,17 @@ void GUI::AddToDrawingList(const Enemy* pE)
 	// IMPORTANT [TO DO]
 	// enemy type has been generated randomly here because enemy classes are not written yet
 	// in next phases, to know enemy type, you should apply dynamic_cast to pE pointer
-	int eType = pDitem->ID%ENMY_TYPE_CNT;	
+	int eType;
+	if (dynamic_cast<Fighter*>(pE))
+	{
+		eType = 0;
+	}
+	else if (dynamic_cast<Healer*>(pE))
+	{
+		eType = 1;
+	}
+	else
+		eType = 2;
 	pDitem->clr = DrawingColors[eType];
 	/////////////
 	/////////////

@@ -256,24 +256,32 @@ void GUI::UpdateStatusBar(int CurrentTimeStep)
 }
 
 void GUI::UpdateInterface(int CurrentTimeStep,double CH, bool Cfrosted, int KilledCount,
-	int ActiveCount, int FrostedCount, int FighterCount, int FreezerCount, int HealerCount)
+	int ActiveCount, int FrostedCount, int ActiveFighter, int ActiveFreezer, int ActiveHealer,
+int FrostedFighter, int FrostedHealer, int FrostedFreezer,
+int KilledFighter, int KilledFreezer, int KilledHealer)
 {
 	ClearDrawingArea();
 	UpdateStatusBar(CurrentTimeStep);
-	pWind->DrawString(300, 525, "Current Time Step: "+ to_string(CurrentTimeStep));
-	pWind->DrawString(300, 545, "Current Castle Health: "+ to_string(CH));
+	pWind->DrawString(100, 525, "Current Time Step: "+ to_string(CurrentTimeStep));
+	pWind->DrawString(100, 545, "Current Castle Health: "+ to_string(CH));
 	string IsFrosted;
 	if (Cfrosted)
 		IsFrosted = "is frosted";
 	else
 		IsFrosted = "is not frosted";
-	pWind->DrawString(300, 565, "The Castle " + IsFrosted);
-	pWind->DrawString(300, 585, "no. of Killed Enemies: " + to_string(KilledCount));
-	pWind->DrawString(300, 605, "no. of Active Enemies: " + to_string(ActiveCount));
-	pWind->DrawString(600, 525, "no. of Frosted Enemies: " + to_string(FrostedCount));
-	pWind->DrawString(600, 545, "no. of Fighter Enemies: " + to_string(FighterCount));
-	pWind->DrawString(600, 565, "no. of Freezer Enemies: " + to_string(FreezerCount));
-	pWind->DrawString(600, 585, "no. of Healer Enemies: " + to_string(HealerCount));
+	pWind->DrawString(100, 565, "The Castle " + IsFrosted);
+	pWind->DrawString(400, 525, "no. of Active Enemies: " + to_string(ActiveCount));
+	pWind->DrawString(400, 545, "no. of Active Fighter: " + to_string(ActiveFighter));
+	pWind->DrawString(400, 565, "no. of Active Freezer: " + to_string(ActiveFreezer));
+	pWind->DrawString(400, 585, "no. of Active Healer: " + to_string(ActiveHealer));
+	pWind->DrawString(700, 525, "no. of Frosted Enemies: " + to_string(FrostedCount));
+	pWind->DrawString(700, 545, "no. of Frosted Fighter: " + to_string(FrostedFighter));
+	pWind->DrawString(700, 565, "no. of Frosted Freezer: " + to_string(FrostedFreezer));
+	pWind->DrawString(700, 585, "no. of Frosted Healer: " + to_string(FrostedHealer));
+	pWind->DrawString(1000, 525, "no. of Killed Enemies: " + to_string(KilledCount));
+	pWind->DrawString(1000, 545, "no. of Killed Fighter: " + to_string(KilledFighter));
+	pWind->DrawString(1000, 565, "no. of Killed Freezer: " + to_string(KilledFreezer));
+	pWind->DrawString(1000, 585, "no. of Killed Healer: " + to_string(KilledHealer));
 	DrawCastleArea();
 	DrawAllItems();
 }

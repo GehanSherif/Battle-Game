@@ -124,7 +124,9 @@ void Battle::Simulator()
 	ImportInputFile(); //Calling input file
 	AddAllListsToDrawingList();
 	pGUI->UpdateInterface(CurrentTimeStep, BCastle.GetHealth(), BCastle.IsFrosted(), KilledCount,
-		ActiveCount, FrostedCount, FighterCount, FreezerCount, HealerCount);	//upadte interface to show the initial case where all enemies are still inactive
+		ActiveCount, FrostedCount, ActiveFighter, ActiveFreezer, ActiveHealer,
+	FrostedFighter, FrostedHealer, FrostedFreezer,
+	 KilledFighter, KilledFreezer, KilledHealer);	//upadte interface to show the initial case where all enemies are still inactive
 
 	pGUI->waitForClick();
 
@@ -139,7 +141,9 @@ void Battle::Simulator()
 		pGUI->ResetDrawingList();
 		AddAllListsToDrawingList();
 		pGUI->UpdateInterface(CurrentTimeStep, BCastle.GetHealth(), BCastle.IsFrosted(), KilledCount,
-			ActiveCount, FrostedCount, FighterCount, FreezerCount, HealerCount);
+			ActiveCount, FrostedCount, ActiveFighter, ActiveFreezer, ActiveHealer,
+			FrostedFighter, FrostedHealer, FrostedFreezer,
+			KilledFighter, KilledFreezer, KilledHealer);
 		pGUI->waitForClick();
 		
 	}

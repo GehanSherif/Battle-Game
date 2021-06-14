@@ -16,6 +16,18 @@ double Castle::GetHealth() const
 	return Health;
 }
 
+bool Castle::getDamage(double damage)
+{
+	Health -= damage;
+	if (Health <= 0)
+	{
+		Health = 0;
+		return true;
+	}
+	else
+		return false;
+}
+
 void Castle::SetmatAttack(int n)
 {
 	matAttack = n;

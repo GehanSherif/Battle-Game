@@ -29,7 +29,7 @@ public:
 	
 
 	bool isEmpty() const;
-	bool insert(T& p, int priority); //inserts a new node in tree
+	bool insert(const T& p, int priority); //inserts a new node in tree
 
 	bool peekMax(T& max) const;
 	bool dequeueMax(T& max);
@@ -75,16 +75,17 @@ bool PriorityQueue<T>::isEmpty() const
 {
 	if (queueSize == 0)
 		return true;
-	else return false;
+	else
+		return false;
 }
 
 template<typename T>
-bool PriorityQueue<T>::insert(T& t, int priority)
+bool PriorityQueue<T>::insert(const T& t, int priority)
 {
-	TreeNode<T>* newNode = new TreeNode<T>(t, priority);
 	if (queueSize >= maxElements)
 		return false;
 
+	TreeNode<T>* newNode = new TreeNode<T>(t, priority);
 	arr[++queueSize] = *newNode;
 	heapifyUp(queueSize);
 	return true;

@@ -7,7 +7,9 @@ private:
 
 
 public:
-    Freezer(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod, int d = MaxDistance);
+    Freezer(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod);
+
+    void Move() override;
 
 };
 

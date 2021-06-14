@@ -1,22 +1,14 @@
 #include "Enemy.h"
 
 
-Enemy::Enemy(int id, int arrTime, int d):ID(id),ArrvTime(arrTime)
-{
-	SetDistance(d);
-}
 
-Enemy::Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod, int d)
-	: ID(id), ArrvTime(arrTime), health(enemyHealth), power(enemyPower), speed(enemySpeed), reloadPeriod(relPeriod)
+Enemy::Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod)
+	: ID(id), ArrvTime(arrTime), originalHealth(enemyHealth), power(enemyPower), speed(enemySpeed), reloadPeriod(relPeriod)
 {
-	SetDistance(d);
 	SetStatus(INAC);
-
-}
-
-
-Enemy::~Enemy()
-{
+	
+	Distance = MaxDistance;
+	Freezed = false;
 }
 
 int Enemy::GetID() const
@@ -47,10 +39,24 @@ ENMY_STATUS Enemy::GetStatus() const
 }
 
 
-void Enemy::DecrementDist()
+bool Enemy::recieveDamage(double damage)
 {
-	if (Distance > MinDistance)
-		Distance = Distance - speed;
+	currentHealth -= damage;
+	if (currentHealth <= 0)
+	{
+		currentHealth = 0;
+		return true;
+	}
+	else
+		return false;
+}
+
+bool Enemy::isDead() const
+{
+	if (currentHealth <= 0)
+		return true;
+	else
+		return false;
 }
 
 
@@ -67,14 +73,19 @@ int Enemy::GetDistance() const
 	return Distance;
 }
 
-void Enemy::setType(int E)
+void Enemy::setType(ENMY_TYPE E)
 {
 	type = E;
 }
 
-int Enemy::getType()
+int Enemy::getType() const
 {
 	return type;
+}
+
+int Enemy::getHealth() const
+{
+	return currentHealth;
 }
 
 

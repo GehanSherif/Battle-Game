@@ -53,7 +53,7 @@ private:
 public:
 	
 	Battle();
-	void AddAllListsToDrawingList();		//Add enemy lists (inactive, active,.....) to drawing list to be displayed on user interface
+	void AddAllListsToDrawingList(); //Add enemy lists (inactive, active,.....) to drawing list to be displayed on user interface
 	Castle * GetCastle();
 	void RunSimulation();
 	void ActivateEnemies();		//check the inactive list and activate all enemies that has arrived
@@ -61,18 +61,16 @@ public:
 
 
 	void AddtoDemoList(Enemy* Ptr);		//Add Enemy to the demo queue of enemies (for demo purposes only)
-	void Just_A_Demo();	//just to show a demo and should be removed in phase1 1 & 2
 	void Simulator();
 	void Demo_UpdateEnemies();	//Randomly update enemies distance/status (for demo purposes)
 
 	void ImportInputFile();
-	//
-	// TODO: Add More Member Functions As Needed
-	//
 
 	void RunSimulation_Once();
 	void FreezeEnemy(Enemy* pE);
 	void DefrostEnemy(Enemy* pE);
 	void KillEnemy(Enemy* pE);
+
+	bool runTimeStep();
 };
 

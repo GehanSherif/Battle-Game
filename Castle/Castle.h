@@ -5,15 +5,12 @@ class Castle
 	double Health;
 	int matAttack; //Max number of enemies a castle can attack at any time step
 	double castlePower;
-	bool frosted=0;
-	//
-	// TODO: Add More Data Members As Needed
-	//
+	bool frosted = false;
 
 public:
-
 	void SetHealth(double h);
 	double GetHealth() const;
+	bool getDamage(double damage); //returns true in case the castle is killed
 
 	void SetmatAttack(int n);
 	int GetmatAttack() const;
@@ -23,10 +20,5 @@ public:
 
 	void SetFrosted(bool f);
 	bool IsFrosted() const;
-
-	//
-	// TODO: Add More Member Functions As Needed
-	//
-
 };
 

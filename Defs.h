@@ -16,7 +16,6 @@ enum ENMY_TYPE	//types of enemies
 	HEALER,		//healer enemy
 	FREEZER,	//freezer enemy
 	ENMY_TYPE_CNT	//Number of types
-
 };
 
 

@@ -28,6 +28,7 @@ protected:
 	int killedTime;		//Time at which an Enemy was killed
 
 	bool Freezed;	//1 if an enemy is freezed and 0 otherwise
+	int timeToEndReload;
 	ENMY_TYPE type;
 
 public:
@@ -41,20 +42,21 @@ public:
 	int GetDistance() const;
 	int getType() const;
 	int getHealth() const;
+	int getReloading() const;
+	bool isFrosted() const;
 
 	//setters
-	void setID(int ID);
-	void setArrvTime(int ATime);
 	void SetStatus(ENMY_STATUS);
 	void SetDistance(int);
 	void setType(ENMY_TYPE);
+	void setReloading(int time);
 
 	//operations
 	bool recieveDamage(double damage);
 	bool isDead() const;
+	void getHeal(double heal);
 	//virtual operations
 	virtual void Move() = 0;	//All enemies can move
-	virtual void Act() = 0;		//Acting means fighting or healing
 
 	//destructor
 	virtual ~Enemy();

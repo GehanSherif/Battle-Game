@@ -165,7 +165,7 @@ void Battle::AddAllListsToDrawingList()
 		pGUI->AddToDrawingList(EnemyList[i]);
 
 	//Fighters
-	Fighter* const* FighterList = Q_ActiveFihter.toArray(ActiveFighterCount);
+	Fighter* const* FighterList = Q_ActiveFighter.toArray(ActiveFighterCount);
 	for (int i = 0; i < ActiveFighterCount; i++)
 		pGUI->AddToDrawingList(FighterList[i]);
 
@@ -175,9 +175,7 @@ void Battle::AddAllListsToDrawingList()
 		pGUI->AddToDrawingList(FreezerList[i]);
 
 	//Healers
-	ActiveHealerCount = S_ActiveHealer.getCount();
-	Healer** HealerList = new Healer*[ActiveHealerCount];
-	HealerList = S_ActiveHealer.toArray();
+	Healer* const* HealerList = S_ActiveHealer.toArray(ActiveHealerCount);
 	for (int i = 0; i < ActiveHealerCount; i++)
 		pGUI->AddToDrawingList(HealerList[i]);
 
@@ -192,15 +190,6 @@ void Battle::AddAllListsToDrawingList()
 	for (int i = 0; i < KilledCount; i++)
 		pGUI->AddToDrawingList(KilledList[i]);
 
-
-
-
-	//Add other lists to drawing list
-	//TO DO
-	//In next phases, you should add enemies from different lists to the drawing list
-	//For the sake of demo, we will use DemoList
-	//for(int i=0; i<DemoListCount; i++)
-	//	pGUI->AddToDrawingList(DemoList[i]);
 }
 
 //check the inactive list and activate all enemies that has arrived
@@ -233,7 +222,7 @@ void Battle::ActivateEnemiesSimulator()
 		{ 
 			ActiveFighter++;
 			Fighter* pFighter = dynamic_cast<Fighter*>(pE);
-			Q_ActiveFihter.insert(pFighter, pFighter->getPriority());
+			Q_ActiveFighter.insert(pFighter, pFighter->getPriority());
 		}
 		else if (pE->getType() == 1)
 		{
@@ -279,7 +268,6 @@ void Battle::Demo_UpdateEnemies()
 						ActiveCount--;
 						KilledCount++;
 					}
-			
 			break;
 		case FRST:
 			Prop = rand()%100;
@@ -319,6 +307,7 @@ void Battle::ImportInputFile()
 	BCastle.SetHealth(stoi(CH));
 	BCastle.SetcasltePower(stoi(CP));
 	BCastle.SetmatAttack(stoi(N));
+	BCastle.setFreezingThreshold(BCastle.GetHealth()*0.33);
 
 
 	//Getting second line (Num of Enemies)
@@ -370,7 +359,7 @@ void Battle::RunSimulation_Once()
 	int freezedFightersNo = 0, freezedHealersNo = 0, freezedFreezersNo = 0, killedActiveEnemiesNo = 0, defrostedEnemies = 0, killedFrostedEnemies = 0;
 	int cH = S_ActiveHealer.getCount();
 	int cFreezer = Q_ActiveFreezer.getC();
-	int cFighter = Q_ActiveFihter.size();
+	int cFighter = Q_ActiveFighter.size();
 
 	//ii. Move all active enemies of all types according to their speeds and movement
 	//pattern.
@@ -380,7 +369,7 @@ void Battle::RunSimulation_Once()
 	PriorityQueue<Fighter*> TempActiveFighterPQ(ActiveFighter);
 	for (int i = 0; i < ActiveFighter; i++)
 	{
-		Q_ActiveFihter.dequeueMax(pFighter);
+		Q_ActiveFighter.dequeueMax(pFighter);
 		if(pFighter->GetStatus() == ACTV)
 		pFighter->DecrementDist();
 		TempActiveFighterPQ.insert(pFighter, pFighter->getPriority());
@@ -388,7 +377,7 @@ void Battle::RunSimulation_Once()
 	for (int i = 0; i < ActiveFighter; i++)
 	{
 		TempActiveFighterPQ.dequeueMax(pFighter);
-		Q_ActiveFihter.insert(pFighter, pFighter->getPriority());
+		Q_ActiveFighter.insert(pFighter, pFighter->getPriority());
 	}
 
 	//2- Moving Freezer
@@ -427,9 +416,9 @@ void Battle::RunSimulation_Once()
 
 	for (int i = 0; i < 2 ; i++)
 	{
-		if (!(Q_ActiveFihter.isEmpty()))
+		if (!(Q_ActiveFighter.isEmpty()))
 		{
-			Q_ActiveFihter.dequeueMax(pFighter);
+			Q_ActiveFighter.dequeueMax(pFighter);
 			FreezeEnemy(pFighter);
 			Q_Frosted.enqueue(pFighter);
 			freezedFightersNo++;
@@ -476,7 +465,7 @@ void Battle::RunSimulation_Once()
 			{
 				pFighter = dynamic_cast<Fighter*>(pE);
 				DefrostEnemy(pFighter);
-				Q_ActiveFihter.insert(pFighter, pFighter->getPriority());
+				Q_ActiveFighter.insert(pFighter, pFighter->getPriority());
 			}
 		}
 	}
@@ -486,9 +475,9 @@ void Battle::RunSimulation_Once()
 	int x = rand() % 3;
 	if (x == 0) //kill Active Fighter
 	{
-		if (!(Q_ActiveFihter.isEmpty()))
+		if (!(Q_ActiveFighter.isEmpty()))
 		{
-			Q_ActiveFihter.dequeueMax(pFighter);
+			Q_ActiveFighter.dequeueMax(pFighter);
 			KillEnemy(pFighter);
 			Q_Killed.enqueue(pFighter);
 		}
@@ -620,4 +609,15 @@ void Battle::KillEnemy(Enemy* pE)
 		}
 	}
 	pE->SetStatus(KILD);
+}
+
+bool Battle::runTimeStep()
+{
+	//enemies walking, enemies acting, enemies reloading, enemy picking criteria
+
+
+
+	//castle attacking
+
+	return false;
 }

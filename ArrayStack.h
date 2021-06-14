@@ -67,7 +67,7 @@ public:
 		return count;
 	}
 
-	T* toArray()
+	const T* toArray(int& count)
 	{
 		T* arr = new T[count];
 		if (isEmpty())

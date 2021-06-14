@@ -28,9 +28,29 @@ void Fighter::Move()
     }
 }
 
+void Fighter::attackCastle(Castle* castle)
+{
+    if (isReloading())
+        return;
+
+    double k;
+    if (currentHealth < 0.5 * originalHealth)
+        k = 0.5;
+    else
+        k = 1.0;
+    double damage = (k * power) / Distance;
+    castle->receiveDamage(damage);
+}
+
 //This function returns the priority of a fighter to be attacked by the castle and 
 //is based on distance, power, health, status(active or frosted), remaining time steps for an enemy to end reload period.
-double Fighter::getPriority()
+double Fighter::getPriority() const
 {
-    return 0.0;
+    int k;
+    if (isFrosted())
+        k = 0.5;
+    else
+        k = 1;
+    
+    return (power * currentHealth * k) / (Distance * (getReloading()+1));
 }

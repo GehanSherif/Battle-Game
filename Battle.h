@@ -32,9 +32,9 @@ private:
 
 	Queue<Enemy*> Q_Inactive;					//Queue of inactive enemies
 	Queue<Freezer*> Q_ActiveFreezer;			//Queue of Active Freezers
-	PriorityQueue<Fighter*> Q_ActiveFihter;		//Priority queue of active Fighters
+	PriorityQueue<Fighter*> Q_ActiveFighter;		//Priority queue of active Fighters
 	ArrayStack<Healer*> S_ActiveHealer;			//Stack of Active Healers
-	Queue<Enemy*> Q_Frosted;					//Queue of Frosted Enemies
+	PriorityQueue<Enemy*> Q_Frosted;			//Queue of Frosted Enemies
 	Queue<Enemy*> Q_Killed;						//Queue of killed Enemies
 	
 
@@ -43,12 +43,6 @@ private:
 	//Queue for all enemies in the battle
 	int DemoListCount;
 	Enemy* DemoList[MaxEnemyCount];	//Important: This is just for demo
-	/// ==>
-
-
-	//
-	// TODO: Add More Data Members As Needed
-	//
 
 public:
 	
@@ -60,7 +54,7 @@ public:
 	void ActivateEnemiesSimulator();
 
 
-	void AddtoDemoList(Enemy* Ptr);		//Add Enemy to the demo queue of enemies (for demo purposes only)
+	void AddtoDemoList(Enemy* Ptr); //Add Enemy to the demo queue of enemies (for demo purposes only)
 	void Simulator();
 	void Demo_UpdateEnemies();	//Randomly update enemies distance/status (for demo purposes)
 

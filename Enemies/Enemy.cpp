@@ -9,21 +9,12 @@ Enemy::Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpee
 	
 	Distance = MaxDistance;
 	Freezed = false;
+	timeToEndReload = 0;
 }
 
 int Enemy::GetID() const
 {
 	return ID;
-}
-
-void Enemy::setID(int ID)
-{
-	this->ID = ID;
-}
-
-void Enemy::setArrvTime(int ATime)
-{
-	ArrvTime = ATime;
 }
 
 
@@ -59,6 +50,11 @@ bool Enemy::isDead() const
 		return false;
 }
 
+void Enemy::getHeal(double heal)
+{
+	currentHealth += heal;
+}
+
 
 void Enemy::SetDistance(int d)
 {
@@ -78,6 +74,13 @@ void Enemy::setType(ENMY_TYPE E)
 	type = E;
 }
 
+void Enemy::setReloading(int time)
+{
+	if (time < 0)
+		time = 0;
+	timeToEndReload = time;
+}
+
 int Enemy::getType() const
 {
 	return type;
@@ -86,6 +89,16 @@ int Enemy::getType() const
 int Enemy::getHealth() const
 {
 	return currentHealth;
+}
+
+int Enemy::getReloading() const
+{
+	return timeToEndReload;
+}
+
+bool Enemy::isFrosted() const
+{
+	return Freezed;
 }
 
 

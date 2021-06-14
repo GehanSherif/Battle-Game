@@ -25,7 +25,7 @@ void Healer::Move()
 	{
 		if (MaxDistance - Distance < speed)
 		{
-			Distance = MaxDistance - (speed + Distance - MaxDistance);
+			Distance = MaxDistance - (speed - Distance);
 		}
 		else
 		{
@@ -34,3 +34,26 @@ void Healer::Move()
 	}
 }
 
+void Healer::healEnemy(Enemy* enemy)
+{
+	int k;
+	int diff = abs(enemy->GetDistance() - Distance);
+	if (diff == 0)
+	{
+		k = 1;
+	}
+	else if (diff == 1)
+	{
+		k = 0.5;
+	}
+	else if (diff == 2)
+	{
+		k = 0.25;
+	}
+	else
+	{
+		return;
+	}
+	double heal = 1.0 * k * power;
+	enemy->getHeal(heal);
+}

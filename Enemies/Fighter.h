@@ -11,6 +11,7 @@ public:
     Fighter(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod);
 
     void Move() override;
-    double getPriority();
+    void attackCastle(Castle*);
+    double getPriority() const;
 };
 

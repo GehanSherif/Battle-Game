@@ -16,16 +16,23 @@ double Castle::GetHealth() const
 	return Health;
 }
 
-bool Castle::getDamage(double damage)
+void Castle::receiveDamage(double damage)
 {
 	Health -= damage;
 	if (Health <= 0)
 	{
 		Health = 0;
-		return true;
 	}
-	else
-		return false;
+}
+
+void Castle::receiveFrost(double frost)
+{
+	frostLevel += frost;
+	if (frostLevel >= freezingThreshold)
+	{
+		frostLevel = 0;
+		frosted = true;
+	}
 }
 
 void Castle::SetmatAttack(int n)
@@ -52,7 +59,16 @@ void Castle::SetFrosted(bool f)
 {
 	frosted = f;
 }
+void Castle::setFreezingThreshold(double th)
+{
+	freezingThreshold = th;
+}
 bool Castle::IsFrosted() const
 {
 	return frosted;
+}
+
+double Castle::getFreezingThreshold() const
+{
+	return freezingThreshold;
 }

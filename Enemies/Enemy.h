@@ -49,12 +49,14 @@ public:
 	void SetStatus(ENMY_STATUS);
 	void SetDistance(int);
 	void setType(ENMY_TYPE);
-	void setReloading(int time);
+	void setReloading();
 
 	//operations
 	bool recieveDamage(double damage);
 	bool isDead() const;
 	void getHeal(double heal);
+	void decrementReload();
+
 	//virtual operations
 	virtual void Move() = 0;	//All enemies can move
 

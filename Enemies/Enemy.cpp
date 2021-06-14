@@ -74,11 +74,9 @@ void Enemy::setType(ENMY_TYPE E)
 	type = E;
 }
 
-void Enemy::setReloading(int time)
+void Enemy::setReloading()
 {
-	if (time < 0)
-		time = 0;
-	timeToEndReload = time;
+	timeToEndReload = reloadPeriod;
 }
 
 int Enemy::getType() const
@@ -106,4 +104,11 @@ bool Enemy::isFrosted() const
 int Enemy::GetArrvTime() const
 {
 	return ArrvTime;
+}
+
+void Enemy::decrementReload()
+{
+	if (timeToEndReload == 0)
+		return;
+	timeToEndReload--;
 }

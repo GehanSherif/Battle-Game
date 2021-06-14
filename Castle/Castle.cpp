@@ -35,14 +35,14 @@ void Castle::receiveFrost(double frost)
 	}
 }
 
-void Castle::SetmatAttack(int n)
+void Castle::SetmaxAttack(int n)
 {
-	matAttack = n;
+	maxAttack = n;
 }
 
-int Castle::GetmatAttack() const
+int Castle::GetmaxAttack() const
 {
-	return matAttack;
+	return maxAttack;
 }
 
 void Castle::SetcasltePower(double POW)

@@ -254,7 +254,7 @@ void Battle::Demo_UpdateEnemies()
 		switch(pE->GetStatus())
 		{
 		case ACTV:
-			pE->DecrementDist();	//move the enemy towards the castle
+			//pE->DecrementDist();	//move the enemy towards the castle
 			Prop = rand()%100;
 			if(Prop < FreezProp)		//with Freeze propablity, change some active enemies to be frosted
 			{
@@ -306,7 +306,7 @@ void Battle::ImportInputFile()
 	getline(stream, CP, ' ');
 	BCastle.SetHealth(stoi(CH));
 	BCastle.SetcasltePower(stoi(CP));
-	BCastle.SetmatAttack(stoi(N));
+	BCastle.SetmaxAttack(stoi(N));
 	BCastle.setFreezingThreshold(BCastle.GetHealth()*0.33);
 
 
@@ -371,7 +371,7 @@ void Battle::RunSimulation_Once()
 	{
 		Q_ActiveFighter.dequeueMax(pFighter);
 		if(pFighter->GetStatus() == ACTV)
-		pFighter->DecrementDist();
+		//pFighter->DecrementDist();
 		TempActiveFighterPQ.insert(pFighter, pFighter->getPriority());
 	}
 	for (int i = 0; i < ActiveFighter; i++)
@@ -386,7 +386,7 @@ void Battle::RunSimulation_Once()
 	{
 		Q_ActiveFreezer.dequeue(pFreezer);
 		if(pFreezer->GetStatus() == ACTV)
-		pFreezer->DecrementDist();
+		//pFreezer->DecrementDist();
 		TempActiveFreezerQueue.enqueue(pFreezer);
 	}
 	for (int i = 0; i < ActiveFreezer; i++)
@@ -402,7 +402,7 @@ void Battle::RunSimulation_Once()
 	{
 		S_ActiveHealer.pop(pH);
 		if (pH->GetStatus() == ACTV)
-		pH->DecrementDist();
+		//pH->DecrementDist();
 		TempActiveHealerStack.push(pH);
 	}
 	for (int i = 0; i < ActiveHealer; i++)
@@ -420,21 +420,21 @@ void Battle::RunSimulation_Once()
 		{
 			Q_ActiveFighter.dequeueMax(pFighter);
 			FreezeEnemy(pFighter);
-			Q_Frosted.enqueue(pFighter);
+			//Q_Frosted.enqueue(pFighter);
 			freezedFightersNo++;
 		}
 		if (!(Q_ActiveFreezer.isEmpty()))
 		{
 			Q_ActiveFreezer.dequeue(pFreezer);
 			FreezeEnemy(pFreezer);
-			Q_Frosted.enqueue(pFreezer);
+			//Q_Frosted.enqueue(pFreezer);
 			freezedFreezersNo++;
 		}
 		if (!(S_ActiveHealer.isEmpty()))
 		{
 			S_ActiveHealer.pop(pH);
 			FreezeEnemy(pH);
-			Q_Frosted.enqueue(pH);
+			//Q_Frosted.enqueue(pH);
 			freezedHealersNo++;
 		}
 	}
@@ -446,7 +446,7 @@ void Battle::RunSimulation_Once()
 	{
 		if (!(Q_Frosted.isEmpty()))
 		{
-			Q_Frosted.dequeue(pE);
+			//Q_Frosted.dequeue(pE);
 			//Healer
 			if (dynamic_cast<Healer*>(pE) != nullptr)
 			{
@@ -503,7 +503,7 @@ void Battle::RunSimulation_Once()
 	//2- Frosted Enemy
 	if (!(Q_Frosted.isEmpty()))
 	{
-		Q_Frosted.dequeue(pE);
+		//Q_Frosted.dequeue(pE);
 		KillEnemy(pE);
 		Q_Killed.enqueue(pE);
 	}
@@ -613,11 +613,90 @@ void Battle::KillEnemy(Enemy* pE)
 
 bool Battle::runTimeStep()
 {
-	//enemies walking, enemies acting, enemies reloading, enemy picking criteria
+	//enemies activate, enemies walking, enemies acting, enemies reloading, enemy picking criteria
+	ActivateEnemiesSimulator();
+	Queue<Fighter*> TempActiveFighter;
+	ArrayStack<Healer*> TempActiveHealer;
+	Queue<Freezer*> TempActiveFreezer;
+	Fighter* fighter;
+	Freezer* freezer;
+	Healer* healer;
+	int max = ActiveFighter;
+	if (max < ActiveFreezer)
+		max = ActiveFreezer;
 
+	for (int i = 0; i < max; i++)
+	{
+		if (i < ActiveFighter)
+		{
+			Q_ActiveFighter.dequeueMax(fighter);
+			fighter->Move();
+			if (fighter->getReloading() == 0)
+			{
+				fighter->attackCastle(&BCastle);
+				fighter->setReloading();
+			}
+			else
+				fighter->decrementReload();
+			TempActiveFighter.enqueue(fighter);
+		}
 
+		if (i < ActiveFreezer)
+		{
+			Q_ActiveFreezer.dequeue(freezer);
+			freezer->Move();
+			if (freezer->getReloading() == 0)
+			{
+				freezer->frostCastle(&BCastle);
+				freezer->setReloading();
+			}
+			else
+				freezer->decrementReload();
+			TempActiveFreezer.enqueue(freezer);
+		}
+	}
+	
+	for (int i = 0; i < ActiveHealer; i++)
+	{
+		S_ActiveHealer.pop(healer);
+		healer->Move();
+		for (int j = 0; j < ActiveFighter; j++)
+		{
+			TempActiveFighter.dequeue(fighter);
+			if (fighter->GetDistance() == healer->GetDistance()
+				|| abs(fighter->GetDistance() - healer->GetDistance()) == 1 || abs(fighter->GetDistance() - healer->GetDistance()) == 2)
+				healer->healEnemy(fighter);
+			TempActiveFighter.enqueue(fighter);
+		}
+		TempActiveHealer.push(healer);
+	}
 
+	if (max < ActiveHealer)
+		max = ActiveHealer;
+	for (int i = 0; i < max; i++)
+	{
+		if (max < ActiveFighter)
+		{
+
+			Q_ActiveFighter.insert(fighter, fighter->getPriority());
+		}
+		if (max < ActiveFighter)
+		{
+			TempActiveFreezer.dequeue(freezer);
+			Q_ActiveFreezer.enqueue(freezer);
+		}
+		if (max < ActiveHealer)
+		{
+			TempActiveHealer.pop(healer);
+			S_ActiveHealer.push(healer);
+		}
+	}
+		
 	//castle attacking
-
+	int n = BCastle.GetmaxAttack();
+	for (int i = 0; i < ActiveFighter; i++)
+	{
+		Q_ActiveFighter.dequeueMax(fighter);
+	}
 	return false;
 }

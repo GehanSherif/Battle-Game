@@ -4,7 +4,7 @@ class Castle
 {
 	//inputted from file
 	double Health;
-	int matAttack; //Max number of enemies a castle can attack at any time step
+	int maxAttack; //Max number of enemies a castle can attack at any time step
 	double castlePower;
 	double freezingThreshold;
 
@@ -15,7 +15,7 @@ class Castle
 public:
 	//getters
 	bool IsFrosted() const;
-	int GetmatAttack() const;
+	int GetmaxAttack() const;
 	double GetHealth() const;
 	double GetcastlePower() const;
 	double getFreezingThreshold() const;
@@ -23,7 +23,7 @@ public:
 
 	//setters
 	void SetHealth(double h);
-	void SetmatAttack(int n);
+	void SetmaxAttack(int n);
 	void SetcasltePower(double POW);
 	void SetFrosted(bool f);
 	void setFreezingThreshold(double th);

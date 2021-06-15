@@ -48,9 +48,21 @@ bool Castle::attackEnemey(Enemy* enemy)
 	return enemy->recieveDamage(damage); //true if dead
 }
 
-void Castle::fronstEnemey(Enemy*)
+bool Castle::fronstEnemey(Enemy* enemy)
 {
-	
+	Healer* healer = dynamic_cast<Healer*>(enemy);
+	int k;
+	if (healer != nullptr)
+		k = 2;
+	else
+		k = 1;
+	double frost = 1.0 * castlePower / (k * enemy->GetDistance());
+	return enemy->recieveFrost(frost); //true if dead
+}
+
+void Castle::sendSS()
+{
+
 }
 
 void Castle::SetmaxAttack(int n)
@@ -80,6 +92,12 @@ void Castle::SetFrosted(bool f)
 void Castle::setFreezingThreshold(double th)
 {
 	freezingThreshold = th;
+}
+Castle::Castle()
+{
+	superSoliders.enqueue(new SuperSolider(1));
+	superSoliders.enqueue(new SuperSolider(2));
+	superSoliders.enqueue(new SuperSolider(3));
 }
 bool Castle::IsFrosted() const
 {

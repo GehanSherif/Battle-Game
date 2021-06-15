@@ -30,7 +30,6 @@ protected:
 	int firstShotTime;	//Time at which an Enemy was first shot by the castle
 	int killedTime;		//Time at which an Enemy was killed
 
-	bool Freezed;	//1 if an enemy is freezed and 0 otherwise
 	int timeToEndReload;
 	ENMY_TYPE type;
 
@@ -48,17 +47,18 @@ public:
 	int getReloading() const;
 	int getSpeed() const;
 	bool isFrosted() const;
+	bool isDead() const;
 
 	//setters
 	void SetStatus(ENMY_STATUS);
 	void SetDistance(int);
 	void setType(ENMY_TYPE);
 	void setReloading();
+	void setKilledTime(int time);
 
 	//operations
 	bool recieveDamage(double damage); //returns true if enemey is dead after taking the damage
 	bool recieveFrost(double frost); //returns true in case enemy is frosted
-	bool isDead() const;
 	void getHeal(double heal);
 	void decrementReload();
 	void meltIce();

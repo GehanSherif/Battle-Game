@@ -1,6 +1,9 @@
 #pragma once
 #include "..\Defs.h"
 #include "../Enemies/Enemy.h"
+#include "../SuperSolider.h"
+#include "../Generic_DS/Queue.h"
+
 class Castle
 {
 	//inputted from file
@@ -12,8 +15,13 @@ class Castle
 	//must be initialized
 	bool frosted = false;
 	double frostLevel = 0;
+	int totalSentSS = 0;
+
+	Queue<SuperSolider*> superSoliders;
 
 public:
+	Castle();
+
 	//getters
 	bool IsFrosted() const;
 	int GetmaxAttack() const;
@@ -34,7 +42,8 @@ public:
 	void receiveDamage(double damage);
 	void receiveFrost(double frost); 
 	bool attackEnemey(Enemy*); //returns true if the enemy is dead due to the attack
-	void fronstEnemey(Enemy*);
+	bool fronstEnemey(Enemy*);
+	void sendSS();
 
 
 

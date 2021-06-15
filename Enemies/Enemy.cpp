@@ -38,6 +38,7 @@ bool Enemy::recieveDamage(double damage)
 	if (currentHealth <= 0)
 	{
 		currentHealth = 0;
+		SetStatus(KILD);
 		return true; //dead
 	}
 	else
@@ -46,12 +47,25 @@ bool Enemy::recieveDamage(double damage)
 
 bool Enemy::recieveFrost(double frost)
 {
-	return false;
+	if (isFrosted()) //frosted enemies are not affected by frost
+		return;
+
+	if (currentFrost + frost >= frostThreshold)
+	{
+		currentFrost = 0;
+		SetStatus(FRST);
+		return true; //means enemy got frosted
+	}
+	else
+	{
+		currentFrost += frost;
+		return false;
+	}
 }
 
 bool Enemy::isDead() const
 {
-	if (currentHealth <= 0)
+	if (GetStatus() == KILD)
 		return true;
 	else
 		return false;
@@ -86,6 +100,11 @@ void Enemy::setReloading()
 	timeToEndReload = reloadPeriod;
 }
 
+void Enemy::setKilledTime(int time)
+{
+	killedTime = time;
+}
+
 int Enemy::getType() const
 {
 	return type;
@@ -111,7 +130,10 @@ int Enemy::getSpeed() const
 
 bool Enemy::isFrosted() const
 {
-	return Freezed;
+	if (GetStatus() == FRST)
+		return true;
+	else
+		return false;
 }
 
 

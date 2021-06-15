@@ -319,6 +319,19 @@ void GUI::AddToDrawingList(Enemy* pE)
 	DrawingList[DrawingItemsCount++]=pDitem;	//add item to the list
 }
 
+void GUI::AddToDrawingList(SuperSolider* pSS)
+{
+	DrawingItem* pDitem = new DrawingItem;
+	pDitem->ID = 0;
+	pDitem->distance = pSS->getDistance();
+	pDitem->region = ACTV_REG;	//map status to drawing region
+	pDitem->clr = GOLD;
+	/////////////
+	/////////////
+
+	DrawingList[DrawingItemsCount++] = pDitem;	//add item to the list
+}
+
 
 void GUI::ResetDrawingList()
 {

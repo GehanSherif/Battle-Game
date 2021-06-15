@@ -16,9 +16,9 @@ class Battle
 private:
 	GUI* pGUI;
 	Castle BCastle;
-	int EnemyCount;	//the actual number of enemies in the game
-	int FighterCount, FreezerCount, HealerCount;
-	int KilledFighter=0, KilledFreezers=0, KilledHealer;
+	int EnemyCount=0;	//the actual number of enemies in the game
+	int FighterCount=0, FreezerCount=0, HealerCount=0;
+	int KilledFighter=0, KilledFreezers=0, KilledHealer=0;
 	int FrostedFighter=0, FrostedFreezer=0, FrostedHealer=0;
 
 	static int CurrentTimeStep;

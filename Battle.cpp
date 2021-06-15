@@ -13,12 +13,6 @@ using namespace std;
 int Battle::CurrentTimeStep = 0;
 Battle::Battle()
 {	
-	EnemyCount = 0;
-	DemoListCount =	0;
-	FighterCount = 0;
-	FreezerCount = 0;
-	HealerCount = 0;
-
 	pGUI = NULL;
 }
 
@@ -71,21 +65,22 @@ void Battle::InteractiveMode()
 	GAME_STATUS gameStatus= IN_PROGRESS;
 	while (gameStatus == IN_PROGRESS)
 	{
-		pGUI->PrintMessage("Click to continue");
+		//pGUI->PrintMessage("Click to continue");
 		pGUI->waitForClick();
 		CurrentTimeStep++;
 		gameStatus=runTimeStep();
 		pGUI->ResetDrawingList();
 		AddAllListsToDrawingList();
-		ActiveFighters = Q_ActiveFighter.size() - KilledFighter - FrostedFighter;
-		ActiveHealers = S_ActiveHealer.getCount() - KilledHealer - FrostedHealer;
-		ActiveFreezers = Q_ActiveFreezer.getC() - KilledFreezers - FrostedFreezer;
+		ActiveFighters = FighterCount - KilledFighter - FrostedFighter;
+		ActiveHealers = HealerCount - KilledHealer - FrostedHealer;
+		ActiveFreezers = FreezerCount - KilledFreezers - FrostedFreezer;
 		ActiveCount = ActiveFighters + ActiveHealers + ActiveFreezers;
 		FrostedCount = FrostedFighter + FrostedFreezer + FrostedHealer;
 		pGUI->UpdateInterface(CurrentTimeStep, BCastle.GetHealth(), BCastle.IsFrosted(), Q_Killed.getC(),
 			ActiveCount, FrostedCount, ActiveFighters, ActiveFreezers, ActiveHealers,
 			FrostedFighter, FrostedHealer, FrostedFreezer, KilledFighter, KilledFreezers, KilledHealer);
 	}
+	pGUI->waitForClick();
 }
 
 //void Battle::Simulator()
@@ -716,11 +711,13 @@ GAME_STATUS Battle::runTimeStep()
 	int n = BCastle.GetmaxAttack();
 	srand(time(0));
 	int randomnum = rand();
-	if (randomnum % 4 == 0)
+	if (randomnum % 2 == 0)
 	{
 		int firenum = n * 0.8;
 		for (int i = 0; i < firenum; i++)
 		{
+			if (Q_ActiveFighter.size() == 0)
+				break;
 			Q_ActiveFighter.dequeueMax(fighter);
 			if (BCastle.attackEnemy(fighter))
 			{
@@ -734,6 +731,8 @@ GAME_STATUS Battle::runTimeStep()
 		{
 			for (int i = 0; i < firenum - ActiveFighter; i++)
 			{
+				if (S_ActiveHealer.getCount() == 0)
+					break;
 				S_ActiveHealer.pop(healer);
 				if (BCastle.attackEnemy(healer))
 				{
@@ -747,6 +746,8 @@ GAME_STATUS Battle::runTimeStep()
 			{
 				for (int i = 0; i < ActiveFreezer; i++)
 				{
+					if (Q_ActiveFreezer.getC() == 0)
+						break;
 					Q_ActiveFreezer.dequeue(freezer);
 					if (i < firenum - (ActiveFighter + ActiveHealer))
 					{
@@ -771,6 +772,8 @@ GAME_STATUS Battle::runTimeStep()
 			{
 				for (int i = 0; i < icenum; i++)
 				{
+					if (Q_ActiveFighter.size() == 0)
+						break;
 					Q_ActiveFighter.dequeueMax(fighter);
 					if (BCastle.frostEnemy(fighter))
 						FrostedFighter++;
@@ -781,6 +784,8 @@ GAME_STATUS Battle::runTimeStep()
 			{
 				for (int i = 0; i < icenum - ActiveFighter; i++)
 				{
+					if (S_ActiveHealer.getCount() == 0)
+						break;
 					S_ActiveHealer.pop(healer);
 					if (BCastle.frostEnemy(healer))
 						FrostedHealer++;
@@ -816,6 +821,8 @@ GAME_STATUS Battle::runTimeStep()
 	{
 		for (int i = 0; i < n; i++)
 		{
+			if (Q_ActiveFighter.size() == 0)
+				break;
 			Q_ActiveFighter.dequeueMax(fighter);
 			if (BCastle.attackEnemy(fighter))
 			{
@@ -829,6 +836,8 @@ GAME_STATUS Battle::runTimeStep()
 		{
 			for (int i = 0; i < n - ActiveFighter; i++)
 			{
+				if (S_ActiveHealer.getCount() == 0)
+					break;
 				S_ActiveHealer.pop(healer);
 				if (BCastle.attackEnemy(healer))
 				{
@@ -843,6 +852,8 @@ GAME_STATUS Battle::runTimeStep()
 			{
 				for (int i = 0; i < ActiveFreezer; i++)
 				{
+					if (Q_ActiveFreezer.getC() == 0)
+						break;
 					Q_ActiveFreezer.dequeue(freezer);
 					if (i < n - (ActiveFighter + ActiveHealer))
 					{

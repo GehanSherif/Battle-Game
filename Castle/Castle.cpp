@@ -61,9 +61,12 @@ bool Castle::frostEnemy(Enemy* enemy)
 	return enemy->recieveFrost(frost); //true if dead
 }
 
-void Castle::sendSS()
+void Castle::sendSS(int destiny)
 {
-
+	if (totalSentSS == 3)
+		return;
+	totalSentSS++;
+	superSoliders
 }
 
 void Castle::SetmaxAttack(int n)

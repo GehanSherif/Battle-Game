@@ -45,7 +45,7 @@ public:
 	void receiveFrost(double frost); 
 	bool attackEnemy(Enemy*); //returns true if the enemy is dead due to the attack
 	bool frostEnemy(Enemy*);
-	void sendSS();
+	void sendSS(int destiny);
 
 
 

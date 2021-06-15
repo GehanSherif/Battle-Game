@@ -1,5 +1,6 @@
 #pragma once
 #include "..\Defs.h"
+#include "../Enemies/Enemy.h"
 class Castle
 {
 	//inputted from file
@@ -30,8 +31,10 @@ public:
 
 
 	//operations
-	void receiveDamage(double damage); //returns true in case the castle is killed
+	void receiveDamage(double damage);
 	void receiveFrost(double frost); 
+	bool attackEnemey(Enemy*); //returns true if the enemy is dead due to the attack
+	void fronstEnemey(Enemy*);
 
 
 

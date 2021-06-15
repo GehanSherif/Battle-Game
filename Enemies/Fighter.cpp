@@ -17,11 +17,11 @@ void Fighter::Move()
     {
         if (currentHealth < 0.5 * originalHealth)
         {
-            Distance -= 0.5 * speed;
+            Distance -= 0.5 * getSpeed();
         }
         else
         {
-            Distance -= speed;
+            Distance -= getSpeed();
         }
         if (Distance < MinDistance)
             Distance = MinDistance;
@@ -30,7 +30,7 @@ void Fighter::Move()
 
 void Fighter::attackCastle(Castle* castle)
 {
-    if (isReloading())
+    if (getReloading() != 0) //must equal zero
         return;
 
     double k;

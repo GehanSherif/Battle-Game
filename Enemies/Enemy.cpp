@@ -4,12 +4,14 @@
 
 Enemy::Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod)
 	: ID(id), ArrvTime(arrTime), originalHealth(enemyHealth), power(enemyPower), speed(enemySpeed), reloadPeriod(relPeriod)
+	, frostThreshold(0.33 * enemyHealth)
 {
 	SetStatus(INAC);
 	
 	Distance = MaxDistance;
 	Freezed = false;
 	timeToEndReload = 0;
+	currentFrost = 0;
 }
 
 int Enemy::GetID() const
@@ -36,10 +38,15 @@ bool Enemy::recieveDamage(double damage)
 	if (currentHealth <= 0)
 	{
 		currentHealth = 0;
-		return true;
+		return true; //dead
 	}
 	else
-		return false;
+		return false; //not dead
+}
+
+bool Enemy::recieveFrost(double frost)
+{
+	return false;
 }
 
 bool Enemy::isDead() const
@@ -94,6 +101,14 @@ int Enemy::getReloading() const
 	return timeToEndReload;
 }
 
+int Enemy::getSpeed() const
+{
+	if (currentFrost >= frostThreshold)
+		return 0.7 * speed;
+	else
+		return speed;
+}
+
 bool Enemy::isFrosted() const
 {
 	return Freezed;
@@ -111,4 +126,13 @@ void Enemy::decrementReload()
 	if (timeToEndReload == 0)
 		return;
 	timeToEndReload--;
+}
+
+void Enemy::meltIce()
+{
+	currentFrost -= 0.1 * (currentHealth + power);
+}
+
+Enemy::~Enemy()
+{
 }

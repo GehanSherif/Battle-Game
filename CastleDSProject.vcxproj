@@ -274,6 +274,8 @@
     <ClCompile Include="Enemies\Freezer.cpp" />
     <ClCompile Include="Enemies\Healer.cpp" />
     <ClCompile Include="GUI\GUI.cpp" />
+    <ClCompile Include="Header.cpp" />
+    <ClCompile Include="SuperSolider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArrayStack.h" />
@@ -307,6 +309,7 @@
     <ClInclude Include="Generic_DS\Node.h" />
     <ClInclude Include="Generic_DS\Queue.h" />
     <ClInclude Include="GUI\GUI.h" />
+    <ClInclude Include="SuperSolider.h" />
     <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="TreeNode.h" />
     <ClInclude Include="StackADT.h" />

@@ -11,25 +11,25 @@ void Healer::Move()
 {
 	if (movingDirection == 0) //moving towards castle
 	{
-		if (Distance - MinDistance < speed)
+		if (Distance - MinDistance < getSpeed())
 		{
-			Distance = speed - Distance + MinDistance;
+			Distance = getSpeed() - Distance + MinDistance;
 			movingDirection = 1;
 		}
 		else
 		{
-			Distance -= speed;
+			Distance -= getSpeed();
 		}
 	}
 	else
 	{
-		if (MaxDistance - Distance < speed)
+		if (MaxDistance - Distance < getSpeed())
 		{
-			Distance = MaxDistance - (speed - Distance);
+			Distance = MaxDistance - (getSpeed() - Distance);
 		}
 		else
 		{
-			Distance += speed;
+			Distance += getSpeed();
 		}
 	}
 }

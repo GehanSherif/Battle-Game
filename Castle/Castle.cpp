@@ -1,4 +1,5 @@
 #include "Castle.h"
+#include "../Enemies/Healer.h"
 
 
 
@@ -33,6 +34,23 @@ void Castle::receiveFrost(double frost)
 		frostLevel = 0;
 		frosted = true;
 	}
+}
+
+bool Castle::attackEnemey(Enemy* enemy)
+{
+	Healer* healer = dynamic_cast<Healer*>(enemy);
+	int k;
+	if (healer != nullptr)
+		k = 2;
+	else
+		k = 1;
+	double damage = 1.0 * castlePower / (k * enemy->GetDistance());
+	return enemy->recieveDamage(damage); //true if dead
+}
+
+void Castle::fronstEnemey(Enemy*)
+{
+	
 }
 
 void Castle::SetmaxAttack(int n)

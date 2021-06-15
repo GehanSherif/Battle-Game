@@ -18,10 +18,13 @@ protected:
 	int Distance;	//Horizontal distance between enemy & the tower of its region;Always positive (ranges from 2 to 60)
 
 	const double originalHealth;	//Enemy health
+	const double frostThreshold;
 
 	double currentHealth;
+	double currentFrost;
 	double speed;	//Enemy speed
 	double power;	//Enemy Power
+
 
 	int reloadPeriod;	//Time an Enemy takes to reload
 	int firstShotTime;	//Time at which an Enemy was first shot by the castle
@@ -43,6 +46,7 @@ public:
 	int getType() const;
 	int getHealth() const;
 	int getReloading() const;
+	int getSpeed() const;
 	bool isFrosted() const;
 
 	//setters
@@ -52,10 +56,12 @@ public:
 	void setReloading();
 
 	//operations
-	bool recieveDamage(double damage);
+	bool recieveDamage(double damage); //returns true if enemey is dead after taking the damage
+	bool recieveFrost(double frost); //returns true in case enemy is frosted
 	bool isDead() const;
 	void getHeal(double heal);
 	void decrementReload();
+	void meltIce();
 
 	//virtual operations
 	virtual void Move() = 0;	//All enemies can move

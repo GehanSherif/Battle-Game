@@ -59,10 +59,6 @@ void Battle::RunSimulation()
 		break;
 	case MODE_SLNT:
 		break;
-	case MODE_DEMO:
-
-	case MODE_SIMULATOR:
-		Simulator();
 	}
 	delete pGUI;
 	
@@ -617,75 +613,82 @@ bool Battle::runTimeStep()
 	ActivateEnemiesSimulator();
 	Queue<Fighter*> TempActiveFighter;
 	ArrayStack<Healer*> TempActiveHealer;
-	Queue<Freezer*> TempActiveFreezer;
 	Fighter* fighter;
 	Freezer* freezer;
 	Healer* healer;
-	int max = ActiveFighter;
+	int max = ActiveFighter; //You forgot to compare all three here
 	if (max < ActiveFreezer)
 		max = ActiveFreezer;
+	if (max < ActiveHealer)
+		max = ActiveHealer;
 
-	for (int i = 0; i < max; i++)
+	for (int i = 0; i < max; i++) //moving fighter and freezer && fighter and freezer attacking castle
 	{
 		if (i < ActiveFighter)
 		{
 			Q_ActiveFighter.dequeueMax(fighter);
-			fighter->Move();
-			if (fighter->getReloading() == 0)
+			if (!(fighter->isFrosted())) //lazem el check bta3 frosted da fe kollo
 			{
-				fighter->attackCastle(&BCastle);
-				fighter->setReloading();
+				fighter->Move();
+				if (fighter->getReloading() == 0)
+				{
+					fighter->attackCastle(&BCastle);
+					fighter->setReloading();
+				}
+				else
+					fighter->decrementReload();
 			}
-			else
-				fighter->decrementReload();
+
 			TempActiveFighter.enqueue(fighter);
 		}
 
 		if (i < ActiveFreezer)
 		{
 			Q_ActiveFreezer.dequeue(freezer);
-			freezer->Move();
-			if (freezer->getReloading() == 0)
+			if (!(freezer->isFrosted()))
 			{
-				freezer->frostCastle(&BCastle);
-				freezer->setReloading();
+				freezer->Move();
+				if (freezer->getReloading() == 0)
+				{
+					freezer->frostCastle(&BCastle);
+					freezer->setReloading();
+				}
+				else
+					freezer->decrementReload();
 			}
-			else
-				freezer->decrementReload();
-			TempActiveFreezer.enqueue(freezer);
+			Q_ActiveFreezer.enqueue(freezer); //Mlha4 lazma n3ml temp lelfreezer
 		}
 	}
 	
+	//ana 4elt el max mn hna 34an kanet m3ana aslan mn foo2
+	//fa m4 handawar 3leeha tany
+
 	for (int i = 0; i < ActiveHealer; i++)
 	{
 		S_ActiveHealer.pop(healer);
-		healer->Move();
-		for (int j = 0; j < ActiveFighter; j++)
+		if (!(healer->isFrosted()))
 		{
-			TempActiveFighter.dequeue(fighter);
-			if (fighter->GetDistance() == healer->GetDistance()
-				|| abs(fighter->GetDistance() - healer->GetDistance()) == 1 || abs(fighter->GetDistance() - healer->GetDistance()) == 2)
-				healer->healEnemy(fighter);
-			TempActiveFighter.enqueue(fighter);
+			healer->Move();
+			for (int j = 0; j < ActiveFighter; j++)
+			{
+				TempActiveFighter.dequeue(fighter);
+				if (fighter->GetDistance() == healer->GetDistance()
+					|| abs(fighter->GetDistance() - healer->GetDistance()) == 1 || abs(fighter->GetDistance() - healer->GetDistance()) == 2)
+					healer->healEnemy(fighter);
+				TempActiveFighter.enqueue(fighter);
+			}
 		}
 		TempActiveHealer.push(healer);
 	}
 
-	if (max < ActiveHealer)
-		max = ActiveHealer;
 	for (int i = 0; i < max; i++)
 	{
-		if (max < ActiveFighter)
+		if (i < ActiveFighter)
 		{
-
-			Q_ActiveFighter.insert(fighter, fighter->getPriority());
+			TempActiveFighter.dequeue(fighter);
+			Q_ActiveFighter.insert(fighter, fighter->getPriority()); //nseety t3mly dequeue mn el tempFighter
 		}
-		if (max < ActiveFighter)
-		{
-			TempActiveFreezer.dequeue(freezer);
-			Q_ActiveFreezer.enqueue(freezer);
-		}
-		if (max < ActiveHealer)
+		if (i < ActiveHealer)
 		{
 			TempActiveHealer.pop(healer);
 			S_ActiveHealer.push(healer);

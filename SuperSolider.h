@@ -2,16 +2,19 @@
 class SuperSolider
 {
 private:
-	int Distance, Destiny;
-	const int speed = 3;
+	int Distance;
+	
+	const int Destiny, speed = 3;
 
 public:
 	SuperSolider(int distance, int destiny);
 
 	//getters
+	int getDistance();
+	int getDestiny();
 
 	//setters
 	
 	//operations
-
+	void move();
 };

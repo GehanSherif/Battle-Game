@@ -15,11 +15,11 @@ void Freezer::Move()
     {
         if (currentHealth < 0.5 * originalHealth)
         {
-            Distance -= 0.5 * speed;
+            Distance -= 0.5 * getSpeed();
         }
         else
         {
-            Distance -= speed;
+            Distance -= getSpeed();
         }
         if (Distance < MinDistance)
             Distance = MinDistance;
@@ -28,7 +28,7 @@ void Freezer::Move()
 
 void Freezer::frostCastle(Castle* castle)
 {
-    if (isReloading())
+    if (getReloading() != 0) //must equal zero
         return;
 
     double k;
@@ -36,6 +36,6 @@ void Freezer::frostCastle(Castle* castle)
         k = 0.5;
     else
         k = 1.0;
-    double damage = (k * pow(power, 2)) / Distance;
-    castle->receiveDamage(damage);
+    double frost = (k * pow(power, 2)) / Distance;
+    castle->receiveFrost(frost);
 }

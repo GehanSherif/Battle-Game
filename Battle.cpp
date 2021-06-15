@@ -673,6 +673,18 @@ bool Battle::runTimeStep()
 				}
 			}
 		}
+		int TempAF = TempActiveFighter.getC();
+		for (int i = 0; i < TempAF; i++)
+		{
+			TempActiveFighter.dequeue(fighter);
+			Q_ActiveFighter.insert(fighter, fighter->getPriority());
+		}
+		int TempAH = TempActiveHealer.getCount();
+		for (int i = 0; i < TempAH; i++)
+		{
+			TempActiveHealer.pop(healer);
+			S_ActiveHealer.push(healer);
+		}
 	}
 	else
 	{
@@ -710,6 +722,18 @@ bool Battle::runTimeStep()
 						Q_ActiveFreezer.enqueue(freezer);
 				}
 			}
+		}
+		int TempAF = TempActiveFighter.getC();
+		for (int i = 0; i < TempAF; i++)
+		{
+			TempActiveFighter.dequeue(fighter);
+			Q_ActiveFighter.insert(fighter, fighter->getPriority());
+		}
+		int TempAH = TempActiveHealer.getCount();
+		for (int i = 0; i < TempAH; i++)
+		{
+			TempActiveHealer.pop(healer);
+			S_ActiveHealer.push(healer);
 		}
 	}
 

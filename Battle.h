@@ -22,7 +22,7 @@ private:
 	int ActiveFighter, ActiveFreezer, ActiveHealer;
 	int FrostedFighter, FrostedHealer, FrostedFreezer;
 	int KilledFighter, KilledFreezer, KilledHealer;
-	int CurrentTimeStep;
+	static int CurrentTimeStep;
 	//Enemy * BEnemiesForDraw[MaxEnemyCount]; // This Array of Pointers is used for drawing elements in the GUI
 								  			// No matter what list type you are using to hold enemies, 
 											// you must pass the enemies to the GUI function as an array of enemy pointers. 
@@ -55,10 +55,12 @@ public:
 
 
 	void AddtoDemoList(Enemy* Ptr); //Add Enemy to the demo queue of enemies (for demo purposes only)
-	void Simulator();
+	//void Simulator();
 	void Demo_UpdateEnemies();	//Randomly update enemies distance/status (for demo purposes)
 
 	void ImportInputFile();
+
+	static int getCurrentTimeStep();
 
 	void RunSimulation_Once();
 	bool runTimeStep();

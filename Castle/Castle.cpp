@@ -57,7 +57,7 @@ bool Castle::frostEnemy(Enemy* enemy)
 	else
 		k = 1;
 	double frost = 1.0 * castlePower / (k * enemy->GetDistance());
-	return enemy->recieveFrost(frost); //true if dead
+	return enemy->recieveFrost(frost); //true if frosted
 }
 
 void Castle::sendSS()

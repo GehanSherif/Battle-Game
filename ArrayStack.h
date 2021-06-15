@@ -69,7 +69,7 @@ public:
 
 	const T* toArray(int& count)
 	{
-		T* arr = new T[count];
+		T* arr = new T[this->count];
 		if (isEmpty())
 			return nullptr;
 		else

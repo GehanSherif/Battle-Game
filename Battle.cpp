@@ -27,13 +27,12 @@ Battle::Battle()
 	ActiveCount = 0;
 	FrostedCount = 0;
 	DemoListCount =	0;
-	CurrentTimeStep = 0;
 	FighterCount = 0;
 	FreezerCount = 0;
 	HealerCount = 0;
 	pGUI = NULL;
 }
-
+int Battle::CurrentTimeStep = 0;
 void Battle::AddtoDemoList(Enemy* Ptr)
 {
 	DemoList[DemoListCount++] = Ptr;

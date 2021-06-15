@@ -274,7 +274,6 @@
     <ClCompile Include="Enemies\Freezer.cpp" />
     <ClCompile Include="Enemies\Healer.cpp" />
     <ClCompile Include="GUI\GUI.cpp" />
-    <ClCompile Include="Header.cpp" />
     <ClCompile Include="SuperSolider.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -149,7 +149,6 @@
     <ClCompile Include="Enemies\Freezer.cpp">
       <Filter>Enemies</Filter>
     </ClCompile>
-    <ClCompile Include="Header.cpp" />
     <ClCompile Include="SuperSolider.cpp">
       <Filter>Castle</Filter>
     </ClCompile>

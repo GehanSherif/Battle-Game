@@ -38,5 +38,14 @@ enum PROG_MODE	//mode of the program interface
 
 };
 
+enum GAME_STATUS
+{
+	IN_PROGRESS,
+	WIN,
+	LOSS,
+	DRAWN,
+	STATUS_CNT
+};
+
 
 

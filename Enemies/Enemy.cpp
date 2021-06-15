@@ -147,6 +147,11 @@ bool Enemy::isFrosted() const
 		return false;
 }
 
+int Enemy::getKilledTime() const
+{
+	return killedTime;
+}
+
 int Enemy::getfirstShotTime() const
 {
 	return firstShotTime;

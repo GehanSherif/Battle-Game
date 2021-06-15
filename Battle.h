@@ -53,8 +53,8 @@ public:
 	void Demo_UpdateEnemies();	//Randomly update enemies distance/status (for demo purposes)
 
 	void ImportInputFile();
-	void ExportOutputFile();
+	void ExportOutputFile(GAME_STATUS gameStatus);
 
 	static int getCurrentTimeStep();
-	bool runTimeStep();
+	GAME_STATUS runTimeStep();
 };

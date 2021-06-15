@@ -48,6 +48,7 @@ public:
 	int getHealth() const;
 	int getReloading() const;
 	int getSpeed() const;
+	int getKilledTime() const;
 	bool isFrosted() const;
 	int getfirstShotTime() const;
 	bool isDead() const;
@@ -57,7 +58,6 @@ public:
 	void SetDistance(int);
 	void setType(ENMY_TYPE);
 	void setReloading();
-	void setKilledTime(int time);
 
 	//operations
 	bool recieveFrost(double frost); //returns true in case enemy is frosted

@@ -40,7 +40,6 @@ void Battle::RunSimulation()
 {
 	pGUI = new GUI;
 	PROG_MODE mode = pGUI->getGUIMode();
-		
 	switch (mode)	//Add a function for each mode in next phases
 	{
 	case MODE_INTR:
@@ -328,10 +327,44 @@ void Battle::ImportInputFile()
 	}
 }
 
-void Battle::ExportOutputFile()
+void Battle::ExportOutputFile(GAME_STATUS gameStatus)
 {
 	ofstream fout("outputFile.txt");
-	fout << "HABDDDD";
+	fout << "Game is ";
+	if (gameStatus == WIN)
+	{
+		fout << "WIN\n";
+	}
+	else if (gameStatus == LOSS)
+	{
+		fout << "LOSS\n";
+	}
+	else if (gameStatus == DRAWN)
+	{
+		fout << "DRAWN\n";
+	}
+	
+	fout << "KTS  ID   FD   KD   LT";
+	for (int i = 0; i < Q_Killed.getC(); i++)
+	{
+		Enemy* ptrEnemey;
+		Q_Killed.dequeue(ptrEnemey);
+		
+		//outputting KTS
+		if (ptrEnemey->getKilledTime() < 10)
+		{
+
+		}
+		else if (ptrEnemey->getKilledTime() < 100)
+		{
+
+		}
+		else if (ptrEnemey->getKilledTime() < 1000)
+		{
+
+		}
+		
+	}
 }
 
 int Battle::getCurrentTimeStep()
@@ -504,7 +537,7 @@ int Battle::getCurrentTimeStep()
 
 
 
-bool Battle::runTimeStep()
+GAME_STATUS Battle::runTimeStep()
 {
 	//enemies activate, enemies walking, enemies acting, enemies reloading, enemy picking criteria
 	ActivateEnemiesSimulator();
@@ -743,6 +776,6 @@ bool Battle::runTimeStep()
 		}
 	}
 
-	return true;
+	return IN_PROGRESS;
 }
 

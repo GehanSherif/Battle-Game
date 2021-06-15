@@ -55,14 +55,11 @@ public:
 
 
 	void AddtoDemoList(Enemy* Ptr); //Add Enemy to the demo queue of enemies (for demo purposes only)
-	//void Simulator();
 	void Demo_UpdateEnemies();	//Randomly update enemies distance/status (for demo purposes)
 
 	void ImportInputFile();
+	void ExportOutputFile();
 
 	static int getCurrentTimeStep();
-
-	void RunSimulation_Once();
 	bool runTimeStep();
 };
-

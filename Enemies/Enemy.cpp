@@ -1,16 +1,18 @@
 #include "Enemy.h"
+#include "../Battle.h"
 
 
 
 Enemy::Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod)
 	: ID(id), ArrvTime(arrTime), originalHealth(enemyHealth), power(enemyPower), speed(enemySpeed), reloadPeriod(relPeriod)
-	, frostThreshold(0.33 * enemyHealth)
+	, frostThreshold(0.33 * enemyHealth), totalFrostedTime(relPeriod)
 {
 	SetStatus(INAC);
 	
 	Distance = MaxDistance;
 	timeToEndReload = 0;
 	currentFrost = 0;
+	timeTogetUnfrosted = 0;
 }
 
 int Enemy::GetID() const
@@ -38,10 +40,21 @@ bool Enemy::recieveDamage(double damage)
 	{
 		currentHealth = 0;
 		SetStatus(KILD);
+		killedTime = Battle::getCurrentTimeStep();
 		return true; //dead
 	}
 	else
 		return false; //not dead
+}
+
+void Enemy::reduceFrostedTime()
+{
+	if (timeTogetUnfrosted == 0)
+		if (!isDead())
+			SetStatus(ACTV);
+	else
+		timeTogetUnfrosted--;
+
 }
 
 bool Enemy::recieveFrost(double frost)
@@ -67,6 +80,7 @@ bool Enemy::isDead() const
 	else
 		return false;
 }
+
 
 void Enemy::getHeal(double heal)
 {
@@ -131,6 +145,11 @@ bool Enemy::isFrosted() const
 		return true;
 	else
 		return false;
+}
+
+int Enemy::getfirstShotTime() const
+{
+	return firstShotTime;
 }
 
 

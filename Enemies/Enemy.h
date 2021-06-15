@@ -19,11 +19,13 @@ protected:
 
 	const double originalHealth;	//Enemy health
 	const double frostThreshold;
+	const double totalFrostedTime;
 
 	double currentHealth;
 	double currentFrost;
 	double speed;	//Enemy speed
 	double power;	//Enemy Power
+	double timeTogetUnfrosted;
 
 
 	int reloadPeriod;	//Time an Enemy takes to reload
@@ -47,6 +49,7 @@ public:
 	int getReloading() const;
 	int getSpeed() const;
 	bool isFrosted() const;
+	int getfirstShotTime() const;
 	bool isDead() const;
 
 	//setters
@@ -57,10 +60,11 @@ public:
 	void setKilledTime(int time);
 
 	//operations
-	bool recieveDamage(double damage); //returns true if enemey is dead after taking the damage
 	bool recieveFrost(double frost); //returns true in case enemy is frosted
+	bool recieveDamage(double damage); //returns true if enemey is dead after taking the damage
 	void getHeal(double heal);
 	void decrementReload();
+	void reduceFrostedTime();
 	void meltIce();
 
 	//virtual operations

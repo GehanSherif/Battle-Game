@@ -10,7 +10,7 @@
 #include <ctime>
 
 using namespace std;
-
+int Battle::CurrentTimeStep = 0;
 Battle::Battle()
 {	
 	EnemyCount = 0;
@@ -32,7 +32,7 @@ Battle::Battle()
 	HealerCount = 0;
 	pGUI = NULL;
 }
-int Battle::CurrentTimeStep = 0;
+
 void Battle::AddtoDemoList(Enemy* Ptr)
 {
 	DemoList[DemoListCount++] = Ptr;
@@ -346,6 +346,12 @@ void Battle::ImportInputFile()
 		EnemyCount++;
 		Q_Inactive.enqueue(enemy);
 	}
+}
+
+void Battle::ExportOutputFile()
+{
+	ofstream fout("outputFile.txt");
+	fout << "HABDDDD";
 }
 
 int Battle::getCurrentTimeStep()

@@ -1,4 +1,5 @@
 #include "Freezer.h"
+#include "../Battle.h"
 #include <math.h>
 
 Freezer::Freezer(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod)
@@ -30,6 +31,9 @@ void Freezer::frostCastle(Castle* castle)
 {
     if (getReloading() != 0) //must equal zero
         return;
+
+    if (firstShotTime == 0)
+        firstShotTime = Battle::getCurrentTimeStep();
 
     double k;
     if (currentHealth < 0.5 * originalHealth)

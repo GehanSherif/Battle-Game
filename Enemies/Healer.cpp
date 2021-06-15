@@ -1,4 +1,5 @@
 #include "Healer.h"
+#include "../Battle.h"
 
 Healer::Healer(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod)
 	:Enemy(id, arrTime, enemyHealth, enemyPower, enemySpeed, relPeriod)
@@ -36,6 +37,9 @@ void Healer::Move()
 
 void Healer::healEnemy(Enemy* enemy)
 {
+	if (firstShotTime == 0)
+		firstShotTime = Battle::getCurrentTimeStep();
+
 	int k;
 	int diff = abs(enemy->GetDistance() - Distance);
 	if (diff == 0)

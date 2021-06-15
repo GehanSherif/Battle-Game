@@ -1,4 +1,5 @@
 #include "Fighter.h"
+#include "../Battle.h"
 
 
 Fighter::Fighter(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod)
@@ -32,6 +33,9 @@ void Fighter::attackCastle(Castle* castle)
 {
     if (getReloading() != 0) //must equal zero
         return;
+
+    if(firstShotTime == 0)
+        firstShotTime = Battle::getCurrentTimeStep();
 
     double k;
     if (currentHealth < 0.5 * originalHealth)

@@ -18,10 +18,6 @@ private:
 	Castle BCastle;
 	int EnemyCount;	//the actual number of enemies in the game
 	int FighterCount, FreezerCount, HealerCount;
-	int ActiveCount, FrostedCount, KilledCount;	//no. of enemies (Active, Frosted, killed so far)
-	int ActiveFighter, ActiveFreezer, ActiveHealer;
-	int FrostedFighter, FrostedHealer, FrostedFreezer;
-	int KilledFighter, KilledFreezer, KilledHealer;
 	static int CurrentTimeStep;
 	//Enemy * BEnemiesForDraw[MaxEnemyCount]; // This Array of Pointers is used for drawing elements in the GUI
 								  			// No matter what list type you are using to hold enemies, 
@@ -34,7 +30,6 @@ private:
 	Queue<Freezer*> Q_ActiveFreezer;			//Queue of Active Freezers
 	PriorityQueue<Fighter*> Q_ActiveFighter;		//Priority queue of active Fighters
 	ArrayStack<Healer*> S_ActiveHealer;			//Stack of Active Healers
-	PriorityQueue<Enemy*> Q_Frosted;			//Queue of Frosted Enemies
 	Queue<Enemy*> Q_Killed;						//Queue of killed Enemies
 	
 

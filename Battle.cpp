@@ -629,8 +629,10 @@ GAME_STATUS Battle::runTimeStep()
 					fighter->decrementReload();
 			}
 			else
+			{
 				if (fighter->reduceFrostedTime())
 					FrostedFighter--;
+			}
 			TempActiveFighter.enqueue(fighter);
 		}
 
@@ -649,8 +651,10 @@ GAME_STATUS Battle::runTimeStep()
 					freezer->decrementReload();
 			}
 			else
+			{
 				if (freezer->reduceFrostedTime())
 					FrostedFreezer--;
+			}
 			Q_ActiveFreezer.enqueue(freezer); //Mlha4 lazma n3ml temp lelfreezer
 		}
 	}
@@ -683,8 +687,10 @@ GAME_STATUS Battle::runTimeStep()
 
 		}
 		else
+		{
 			if (healer->reduceFrostedTime())
 				FrostedHealer--;
+		}
 		TempActiveHealer.push(healer);
 	}
 	max = ActiveFighter;
@@ -724,6 +730,8 @@ GAME_STATUS Battle::runTimeStep()
 			{
 				Q_Killed.enqueue(fighter);
 				KilledFighter++;
+				if (fighter->isFrosted())
+					FrostedFighter--;
 			}
 			else
 				TempActiveFighter.enqueue(fighter);
@@ -739,6 +747,8 @@ GAME_STATUS Battle::runTimeStep()
 				{
 					Q_Killed.enqueue(healer);
 					KilledHealer++;
+					if (healer->isFrosted())
+						FrostedHealer--;
 				}
 				else
 					TempActiveHealer.push(healer);
@@ -758,6 +768,8 @@ GAME_STATUS Battle::runTimeStep()
 					{
 						Q_Killed.enqueue(freezer);
 						KilledFreezers++;
+						if (freezer->isFrosted())
+							FrostedFreezer--;
 					}
 					else
 						Q_ActiveFreezer.enqueue(freezer);
@@ -843,6 +855,8 @@ GAME_STATUS Battle::runTimeStep()
 			{
 				Q_Killed.enqueue(fighter);
 				KilledFighter++;
+				if (fighter->isFrosted())
+					FrostedFighter--;
 			}
 			else
 				TempActiveFighter.enqueue(fighter);
@@ -858,8 +872,9 @@ GAME_STATUS Battle::runTimeStep()
 				{
 					Q_Killed.enqueue(healer);
 					KilledHealer++;
+					if (healer->isFrosted())
+						FrostedHealer--;
 				}
-					
 				else
 					TempActiveHealer.push(healer);
 			}
@@ -878,6 +893,8 @@ GAME_STATUS Battle::runTimeStep()
 					{
 						Q_Killed.enqueue(freezer);
 						KilledFreezers++;
+						if (freezer->isFrosted())
+							FrostedFreezer--;
 					}
 					else
 						Q_ActiveFreezer.enqueue(freezer);

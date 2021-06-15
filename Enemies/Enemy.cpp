@@ -47,14 +47,19 @@ bool Enemy::recieveDamage(double damage)
 		return false; //not dead
 }
 
-void Enemy::reduceFrostedTime()
+bool Enemy::reduceFrostedTime()
 {
 	if (timeTogetUnfrosted == 0)
+	{
 		if (!isDead())
 			SetStatus(ACTV);
+		return true;
+	}
 	else
+	{
 		timeTogetUnfrosted--;
-
+		return false;
+	}
 }
 
 bool Enemy::recieveFrost(double frost)
@@ -111,10 +116,7 @@ void Enemy::setReloading()
 	timeToEndReload = reloadPeriod;
 }
 
-void Enemy::setKilledTime(int time)
-{
-	killedTime = time;
-}
+
 
 int Enemy::getType() const
 {

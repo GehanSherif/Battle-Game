@@ -64,7 +64,7 @@ public:
 	bool recieveDamage(double damage); //returns true if enemey is dead after taking the damage
 	void getHeal(double heal);
 	void decrementReload();
-	void reduceFrostedTime();
+	bool reduceFrostedTime();
 	void meltIce();
 
 	//virtual operations

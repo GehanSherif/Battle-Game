@@ -18,6 +18,9 @@ private:
 	Castle BCastle;
 	int EnemyCount;	//the actual number of enemies in the game
 	int FighterCount, FreezerCount, HealerCount;
+	int KilledFighter=0, KilledFreezers=0, KilledHealer;
+	int FrostedFighter=0, FrostedFreezer=0, FrostedHealer=0;
+
 	static int CurrentTimeStep;
 	//Enemy * BEnemiesForDraw[MaxEnemyCount]; // This Array of Pointers is used for drawing elements in the GUI
 								  			// No matter what list type you are using to hold enemies, 
@@ -47,7 +50,7 @@ public:
 	void RunSimulation();
 	void ActivateEnemies();		//check the inactive list and activate all enemies that has arrived
 	void ActivateEnemiesSimulator();
-
+	void InteractiveMode();
 
 	void AddtoDemoList(Enemy* Ptr); //Add Enemy to the demo queue of enemies (for demo purposes only)
 	void Demo_UpdateEnemies();	//Randomly update enemies distance/status (for demo purposes)

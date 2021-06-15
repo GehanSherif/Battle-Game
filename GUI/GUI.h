@@ -101,10 +101,10 @@ public:
 	void PrintMessage(string msg) const; // prints a message in the status bar
 	void DrawMessage(string msg, int x, int y);
 	void UpdateStatusBar(int TimeStep);	//prints info on status bar. Info includes timestep and other enemies info as illustrated in project doc
-	void UpdateInterface(int CurrentTimeStep, double CH, bool Cfrosted, int KilledCount,
-		int ActiveCount, int FrostedCount, int ActiveFighter, int ActiveFreezer, int ActiveHealer,
-		int FrostedFighter, int FrostedHealer, int FrostedFreezer,
-		int KilledFighter, int KilledFreezer, int KilledHealer);
+	void UpdateInterface(int CurrentTimeStep, double CH, bool Cfrosted, int KilledCount=0,
+		int ActiveCount=0, int FrostedCount=0, int ActiveFighter=0, int ActiveFreezer=0, int ActiveHealer=0,
+		int FrostedFighter=0, int FrostedHealer=0, int FrostedFreezer=0,
+		int KilledFighter=0, int KilledFreezer=0, int KilledHealer=0);
 	void AddToDrawingList( Enemy*);	//Adds a new enemy to the drawing queue
 	void AddToDrawingList(SuperSolider*);	//Adds SS to the drawing queue
 	void ResetDrawingList();		//resets drawing list (should be called every timestep after drawing)

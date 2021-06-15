@@ -69,7 +69,7 @@ void Battle::InteractiveMode()
 	AddAllListsToDrawingList();
 	pGUI->UpdateInterface(CurrentTimeStep, BCastle.GetHealth(), BCastle.IsFrosted());	//upadte interface to show the initial case where all enemies are still inactive
 	GAME_STATUS gameStatus= IN_PROGRESS;
-	while (gameStatus = IN_PROGRESS)
+	while (gameStatus == IN_PROGRESS)
 	{
 		pGUI->PrintMessage("Click to continue");
 		pGUI->waitForClick();

@@ -47,7 +47,5 @@ public:
 	bool frostEnemy(Enemy*);
 	void sendSS(int destiny);
 
-
-
 };
 

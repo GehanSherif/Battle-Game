@@ -6,6 +6,9 @@
 #include "Enemies\Freezer.h"
 #include "Enemies/Healer.h"
 #include <string>
+#include <stdlib.h>
+#include <ctime>
+
 using namespace std;
 
 Battle::Battle()
@@ -616,11 +619,9 @@ bool Battle::runTimeStep()
 	Fighter* fighter;
 	Freezer* freezer;
 	Healer* healer;
-	int max = ActiveFighter; //You forgot to compare all three here
+	int max = ActiveFighter; 
 	if (max < ActiveFreezer)
 		max = ActiveFreezer;
-	if (max < ActiveHealer)
-		max = ActiveHealer;
 
 	for (int i = 0; i < max; i++) //moving fighter and freezer && fighter and freezer attacking castle
 	{
@@ -660,33 +661,44 @@ bool Battle::runTimeStep()
 		}
 	}
 	
-	//ana 4elt el max mn hna 34an kanet m3ana aslan mn foo2
-	//fa m4 handawar 3leeha tany
-
 	for (int i = 0; i < ActiveHealer; i++)
 	{
 		S_ActiveHealer.pop(healer);
 		if (!(healer->isFrosted()))
 		{
 			healer->Move();
-			for (int j = 0; j < ActiveFighter; j++)
+			for (int j = 0; j < max; j++)
 			{
-				TempActiveFighter.dequeue(fighter);
-				if (fighter->GetDistance() == healer->GetDistance()
-					|| abs(fighter->GetDistance() - healer->GetDistance()) == 1 || abs(fighter->GetDistance() - healer->GetDistance()) == 2)
-					healer->healEnemy(fighter);
-				TempActiveFighter.enqueue(fighter);
+				if (j < ActiveFighter)
+				{
+					TempActiveFighter.dequeue(fighter);
+					if (fighter->GetDistance() == healer->GetDistance()
+						|| abs(fighter->GetDistance() - healer->GetDistance()) == 1 || abs(fighter->GetDistance() - healer->GetDistance()) == 2)
+						healer->healEnemy(fighter);
+					TempActiveFighter.enqueue(fighter);
+				}
+				if (j < ActiveFreezer)
+				{
+					Q_ActiveFreezer.dequeue(freezer);
+					if (freezer->GetDistance() == healer->GetDistance()
+						|| abs(freezer->GetDistance() - healer->GetDistance()) == 1 || abs(freezer->GetDistance() - healer->GetDistance()) == 2)
+						healer->healEnemy(freezer);
+					Q_ActiveFreezer.enqueue(freezer);
+				}
 			}
+			
 		}
 		TempActiveHealer.push(healer);
 	}
-
+	max = ActiveFighter;
+	if (max < ActiveHealer)
+		max = ActiveHealer;
 	for (int i = 0; i < max; i++)
 	{
 		if (i < ActiveFighter)
 		{
 			TempActiveFighter.dequeue(fighter);
-			Q_ActiveFighter.insert(fighter, fighter->getPriority()); //nseety t3mly dequeue mn el tempFighter
+			Q_ActiveFighter.insert(fighter, fighter->getPriority()); 
 		}
 		if (i < ActiveHealer)
 		{
@@ -697,9 +709,118 @@ bool Battle::runTimeStep()
 		
 	//castle attacking
 	int n = BCastle.GetmaxAttack();
-	for (int i = 0; i < ActiveFighter; i++)
+	srand(time(0));
+	int randomnum = rand();
+	if (randomnum % 4 == 0)
 	{
-		Q_ActiveFighter.dequeueMax(fighter);
+		int firenum = n * 0.8;
+		for (int i = 0; i < firenum; i++)
+		{
+			Q_ActiveFighter.dequeueMax(fighter);
+			if (BCastle.attackEnemey(fighter))
+				Q_Killed.enqueue(fighter);
+			else
+				TempActiveFighter.enqueue(fighter);
+		}
+		if (ActiveFighter < firenum)
+		{
+			for (int i = 0; i < firenum - ActiveFighter; i++)
+			{
+				S_ActiveHealer.pop(healer);
+				if (BCastle.attackEnemey(healer))
+					Q_Killed.enqueue(fighter);
+				else
+					TempActiveHealer.push(healer);
+			}
+		}
+		if ((ActiveFighter + ActiveHealer) < firenum)
+		{
+			for (int i = 0; i<ActiveFreezer; i++)
+			{
+				Q_ActiveFreezer.dequeue(freezer);
+				if (i < firenum - (ActiveFighter + ActiveHealer))
+				{
+					if (BCastle.attackEnemey(freezer))
+						Q_Killed.enqueue(freezer);
+					else
+						Q_ActiveFreezer.enqueue(freezer);
+				}
+				else 
+					Q_ActiveFreezer.enqueue(freezer);
+			}
+		}
+		int icenum = n * 0.2;
+		for (int i = 0; i < icenum; i++)
+		{
+			if (ActiveFighter > firenum)
+			{
+				for (int i = 0; i < icenum; i++)
+				{
+					Q_ActiveFighter.dequeueMax(fighter);
+					BCastle.frostEnemey(fighter);
+					TempActiveFighter.enqueue(fighter);
+				}
+			}
+			if (ActiveFighter < n && ActiveHealer>(n- ActiveFighter))
+			{
+				for (int i = 0; i < icenum - ActiveFighter; i++)
+				{
+					S_ActiveHealer.pop(healer);
+					BCastle.frostEnemey(healer);
+					TempActiveHealer.push(healer);
+				}
+			}
+			if ((ActiveFighter + ActiveHealer) < n && ActiveHealer > (n - (ActiveFighter + ActiveHealer)))
+			{
+				for (int i = 0; i < ActiveFreezer; i++)
+				{
+					Q_ActiveFreezer.dequeue(freezer);
+						if (i < firenum - (ActiveFighter + ActiveHealer))
+							BCastle.frostEnemey(freezer);
+						Q_ActiveFreezer.enqueue(freezer);
+				}
+			}
+		}
 	}
+	else
+	{
+		for (int i = 0; i < n; i++)
+		{
+			Q_ActiveFighter.dequeueMax(fighter);
+			if (BCastle.attackEnemey(fighter))
+				Q_Killed.enqueue(fighter);
+			else
+				TempActiveFighter.enqueue(fighter);
+		}
+		if (ActiveFighter < n)
+		{
+			for (int i = 0; i < n - ActiveFighter; i++)
+			{
+				S_ActiveHealer.pop(healer);
+				if (BCastle.attackEnemey(healer))
+					Q_Killed.enqueue(fighter);
+				else
+					TempActiveHealer.push(healer);
+			}
+		}
+		if ((ActiveFighter + ActiveHealer) < n)
+		{
+			for (int i = 0; i < ActiveFreezer; i++)
+			{
+				Q_ActiveFreezer.dequeue(freezer);
+				if (i < n - (ActiveFighter + ActiveHealer))
+				{
+					if (BCastle.attackEnemey(freezer))
+						Q_Killed.enqueue(freezer);
+					else
+						Q_ActiveFreezer.enqueue(freezer);
+				}
+				else
+					Q_ActiveFreezer.enqueue(freezer);
+			}
+		}
+	}
+
 	return false;
 }
+

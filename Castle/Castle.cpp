@@ -48,7 +48,7 @@ bool Castle::attackEnemey(Enemy* enemy)
 	return enemy->recieveDamage(damage); //true if dead
 }
 
-void Castle::fronstEnemey(Enemy*)
+void Castle::frostEnemey(Enemy*)
 {
 	
 }

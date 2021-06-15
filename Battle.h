@@ -64,7 +64,6 @@ public:
 	void FreezeEnemy(Enemy* pE);
 	void DefrostEnemy(Enemy* pE);
 	void KillEnemy(Enemy* pE);
-
 	bool runTimeStep();
 };
 

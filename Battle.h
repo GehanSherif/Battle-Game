@@ -61,9 +61,6 @@ public:
 	void ImportInputFile();
 
 	void RunSimulation_Once();
-	void frostEnemy(Enemy* pE);
-	void DefrostEnemy(Enemy* pE);
-	void KillEnemy(Enemy* pE);
 	bool runTimeStep();
 };
 

@@ -314,6 +314,11 @@ void Battle::ImportInputFile()
 void Battle::ExportOutputFile(GAME_STATUS gameStatus)
 {
 	ofstream fout("outputFile.txt");
+	Enemy* ptrEnemey;
+	int TotalKilled = Q_Killed.getC();
+	int sumFirstShotDelay = 0;
+	int sumKillDelay = 0;
+
 	fout << "Game is ";
 	if (gameStatus == WIN)
 	{
@@ -329,25 +334,99 @@ void Battle::ExportOutputFile(GAME_STATUS gameStatus)
 	}
 	
 	fout << "KTS  ID   FD   KD   LT";
-	for (int i = 0; i < Q_Killed.getC(); i++)
+	for (int i = 0; i < TotalKilled; i++)
 	{
-		Enemy* ptrEnemey;
+
 		Q_Killed.dequeue(ptrEnemey);
 		
 		//outputting KTS
 		if (ptrEnemey->getKilledTime() < 10)
 		{
-
+			fout << ptrEnemey->getKilledTime() << "    ";
 		}
 		else if (ptrEnemey->getKilledTime() < 100)
 		{
-
+			fout << ptrEnemey->getKilledTime() << "   ";
 		}
 		else if (ptrEnemey->getKilledTime() < 1000)
 		{
+			fout << ptrEnemey->getKilledTime() << "  ";
+		}
 
+		//outputting ID
+		if (ptrEnemey->GetID() < 10)
+		{
+			fout << ptrEnemey->GetID() << "    ";
+		}
+		else if (ptrEnemey->GetID() < 100)
+		{
+			fout << ptrEnemey->GetID() << "   ";
+		}
+		else if (ptrEnemey->GetID() < 1000)
+		{
+			fout << ptrEnemey->GetID() << "  ";
+		}
+
+		//outputting FD
+		sumFirstShotDelay += ptrEnemey->getfirstShotTime() - ptrEnemey->GetArrvTime();
+		if (ptrEnemey->getfirstShotTime() - ptrEnemey->GetArrvTime() < 10)
+		{
+			fout << ptrEnemey->getfirstShotTime() - ptrEnemey->GetArrvTime() << "    ";
+		}
+		else if (ptrEnemey->getfirstShotTime() - ptrEnemey->GetArrvTime() < 100)
+		{
+			fout << ptrEnemey->getfirstShotTime() - ptrEnemey->GetArrvTime() << "   ";
+		}
+		else if (ptrEnemey->getfirstShotTime() - ptrEnemey->GetArrvTime() < 1000)
+		{
+			fout << ptrEnemey->getfirstShotTime() - ptrEnemey->GetArrvTime() << "  ";
+		}
+
+		//outputting KD
+		sumKillDelay += ptrEnemey->getKilledTime() - ptrEnemey->getfirstShotTime();
+		if (ptrEnemey->getKilledTime() - ptrEnemey->getfirstShotTime() < 10)
+		{
+			fout << ptrEnemey->getKilledTime() - ptrEnemey->getfirstShotTime() << "    ";
+		}
+		else if (ptrEnemey->getKilledTime() - ptrEnemey->getfirstShotTime() < 100)
+		{
+			fout << ptrEnemey->getKilledTime() - ptrEnemey->getfirstShotTime() << "   ";
+		}
+		else if (ptrEnemey->getKilledTime() - ptrEnemey->getfirstShotTime() < 1000)
+		{
+			fout << ptrEnemey->getKilledTime() - ptrEnemey->getfirstShotTime() << "  ";
 		}
 		
+		//outputting LT
+		if (ptrEnemey->getKilledTime() - ptrEnemey->GetArrvTime() < 10)
+		{
+			fout << ptrEnemey->getKilledTime() - ptrEnemey->GetArrvTime() << "    ";
+		}
+		else if (ptrEnemey->getKilledTime() - ptrEnemey->GetArrvTime() < 100)
+		{
+			fout << ptrEnemey->getKilledTime() - ptrEnemey->GetArrvTime() << "   ";
+		}
+		else if (ptrEnemey->getKilledTime() - ptrEnemey->GetArrvTime() < 1000)
+		{
+			fout << ptrEnemey->getKilledTime() - ptrEnemey->GetArrvTime() << "  ";
+		}
+		fout << endl;
+	}
+
+	fout << BCastle.getTotalDamage() << endl;
+
+	if (gameStatus == WIN)
+	{
+		fout << "Total Enemies = " << TotalKilled << endl;
+		fout << "Average First-Shot Delay = " << 1.0*sumFirstShotDelay/TotalKilled << endl;
+		fout << "Average Kill Delay = " << 1.0 * sumKillDelay / TotalKilled << endl;
+	}
+	else
+	{
+		fout << "Killed Enemies = " << TotalKilled << endl;
+		fout << "Alive Enemies = " << EnemyCount - TotalKilled << endl;
+		fout << "Average First-Shot Delay for killed = " << 1.0 * sumFirstShotDelay / TotalKilled << endl;
+		fout << "Average Kill Delay for killed = " << 1.0 * sumKillDelay / TotalKilled << endl;
 	}
 }
 

@@ -16,6 +16,7 @@ class Castle
 	bool frosted = false;
 	double frostLevel = 0;
 	int totalSentSS = 0;
+	double totalDamage = 0;
 
 	Queue<SuperSolider*> superSoliders;
 
@@ -28,6 +29,7 @@ public:
 	double GetHealth() const;
 	double GetcastlePower() const;
 	double getFreezingThreshold() const;
+	double getTotalDamage() const;
 
 
 	//setters

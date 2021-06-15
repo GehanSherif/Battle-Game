@@ -19,6 +19,7 @@ double Castle::GetHealth() const
 
 void Castle::receiveDamage(double damage)
 {
+	totalDamage += damage;
 	Health -= damage;
 	if (Health <= 0)
 	{
@@ -107,4 +108,9 @@ bool Castle::IsFrosted() const
 double Castle::getFreezingThreshold() const
 {
 	return freezingThreshold;
+}
+
+double Castle::getTotalDamage() const
+{
+	return totalDamage;
 }

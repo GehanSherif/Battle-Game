@@ -9,7 +9,6 @@ Enemy::Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpee
 	SetStatus(INAC);
 	
 	Distance = MaxDistance;
-	Freezed = false;
 	timeToEndReload = 0;
 	currentFrost = 0;
 }
@@ -47,8 +46,6 @@ bool Enemy::recieveDamage(double damage)
 
 bool Enemy::recieveFrost(double frost)
 {
-	if (isFrosted()) //frosted enemies are not affected by frost
-		return;
 
 	if (currentFrost + frost >= frostThreshold)
 	{

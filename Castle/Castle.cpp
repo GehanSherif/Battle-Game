@@ -36,7 +36,7 @@ void Castle::receiveFrost(double frost)
 	}
 }
 
-bool Castle::attackEnemey(Enemy* enemy)
+bool Castle::attackEnemy(Enemy* enemy)
 {
 	Healer* healer = dynamic_cast<Healer*>(enemy);
 	int k;
@@ -48,7 +48,7 @@ bool Castle::attackEnemey(Enemy* enemy)
 	return enemy->recieveDamage(damage); //true if dead
 }
 
-bool Castle::fronstEnemey(Enemy* enemy)
+bool Castle::frostEnemy(Enemy* enemy)
 {
 	Healer* healer = dynamic_cast<Healer*>(enemy);
 	int k;

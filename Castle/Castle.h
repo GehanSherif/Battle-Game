@@ -41,8 +41,8 @@ public:
 	//operations
 	void receiveDamage(double damage);
 	void receiveFrost(double frost); 
-	bool attackEnemey(Enemy*); //returns true if the enemy is dead due to the attack
-	bool fronstEnemey(Enemy*);
+	bool attackEnemy(Enemy*); //returns true if the enemy is dead due to the attack
+	bool frostEnemy(Enemy*);
 	void sendSS();
 
 

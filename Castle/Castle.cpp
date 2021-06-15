@@ -66,7 +66,6 @@ void Castle::sendSS(int destiny)
 	if (totalSentSS == 3)
 		return;
 	totalSentSS++;
-	superSoliders
 }
 
 void Castle::SetmaxAttack(int n)

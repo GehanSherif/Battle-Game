@@ -5,7 +5,7 @@
 
 Enemy::Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod)
 	: ID(id), ArrvTime(arrTime), originalHealth(enemyHealth), power(enemyPower), speed(enemySpeed), reloadPeriod(relPeriod)
-	, frostThreshold(0.33*enemyHealth), totalFrostedTime(relPeriod)
+	, frostThreshold(0), totalFrostedTime(relPeriod)
 {
 	SetStatus(INAC);
 	

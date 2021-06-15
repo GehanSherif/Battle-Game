@@ -50,7 +50,7 @@ public:
 	void RunSimulation();
 	void ActivateEnemies();		//check the inactive list and activate all enemies that has arrived
 	void ActivateEnemiesSimulator();
-	void InteractiveMode();
+	GAME_STATUS InteractiveMode();
 
 	void AddtoDemoList(Enemy* Ptr); //Add Enemy to the demo queue of enemies (for demo purposes only)
 	void Demo_UpdateEnemies();	//Randomly update enemies distance/status (for demo purposes)

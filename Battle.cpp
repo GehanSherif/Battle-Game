@@ -35,25 +35,25 @@ void Battle::RunSimulation()
 {
 	pGUI = new GUI;
 	PROG_MODE mode = pGUI->getGUIMode();
+	GAME_STATUS status;
 	switch (mode)	//Add a function for each mode in next phases
 	{
 	case MODE_INTR:
-		InteractiveMode();
+		status = InteractiveMode();
 		break;
 	case MODE_STEP:
 		break;
 	case MODE_SLNT:
 		break;
 	}
+	ExportOutputFile(status);
 	delete pGUI;
-	
-	
 }
 
 
 //This is just a demo function for project introductory phase
 //It should be removed in phases 1&2
-void Battle::InteractiveMode()
+GAME_STATUS Battle::InteractiveMode()
 {	
 	int ActiveCount, ActiveFighters, ActiveHealers, ActiveFreezers, FrostedCount;
 	pGUI->PrintMessage("Click to start");
@@ -71,9 +71,9 @@ void Battle::InteractiveMode()
 		gameStatus=runTimeStep();
 		pGUI->ResetDrawingList();
 		AddAllListsToDrawingList();
-		ActiveFighters = FighterCount - KilledFighter - FrostedFighter;
-		ActiveHealers = HealerCount - KilledHealer - FrostedHealer;
-		ActiveFreezers = FreezerCount - KilledFreezers - FrostedFreezer;
+		ActiveFighters = Q_ActiveFighter.size() - FrostedFighter;
+		ActiveHealers = S_ActiveHealer.getCount() - FrostedHealer;
+		ActiveFreezers = Q_ActiveFreezer.getC() - FrostedFreezer;
 		ActiveCount = ActiveFighters + ActiveHealers + ActiveFreezers;
 		FrostedCount = FrostedFighter + FrostedFreezer + FrostedHealer;
 		pGUI->UpdateInterface(CurrentTimeStep, BCastle.GetHealth(), BCastle.IsFrosted(), Q_Killed.getC(),
@@ -81,6 +81,7 @@ void Battle::InteractiveMode()
 			FrostedFighter, FrostedHealer, FrostedFreezer, KilledFighter, KilledFreezers, KilledHealer);
 	}
 	pGUI->waitForClick();
+	return gameStatus;
 }
 
 //void Battle::Simulator()
@@ -328,7 +329,7 @@ void Battle::ExportOutputFile(GAME_STATUS gameStatus)
 		fout << "DRAWN\n";
 	}
 	
-	fout << "KTS  ID   FD   KD   LT";
+	fout << "KTS  ID   FD   KD   LT\n";
 	for (int i = 0; i < TotalKilled; i++)
 	{
 
@@ -768,6 +769,7 @@ GAME_STATUS Battle::runTimeStep()
 		int icenum = n-firenum;
 		for (int i = 0; i < icenum; i++)
 		{
+			int iced = 0;
 			if (ActiveFighter > firenum)
 			{
 				for (int i = 0; i < icenum; i++)
@@ -777,32 +779,42 @@ GAME_STATUS Battle::runTimeStep()
 					Q_ActiveFighter.dequeueMax(fighter);
 					if(!fighter->isFrosted())
 						if (BCastle.frostEnemy(fighter))
+						{
 							FrostedFighter++;
+							iced++;
+						}
 					TempActiveFighter.enqueue(fighter);
 				}
 			}
-			if (ActiveFighter < n && ActiveHealer>(n- ActiveFighter))
+			if (ActiveFighter < n) // && ActiveHealer>(n- ActiveFighter)
 			{
-				for (int i = 0; i < icenum - ActiveFighter; i++)
+				icenum = icenum - iced;
+				iced = 0;
+				for (int i = 0; i < icenum; i++)
 				{
 					if (S_ActiveHealer.getCount() == 0)
 						break;
 					S_ActiveHealer.pop(healer);
 					if(!healer->isFrosted())
 						if (BCastle.frostEnemy(healer))
+						{
 							FrostedHealer++;
+							iced++;
+						}
+
 					TempActiveHealer.push(healer);
 				}
 			}
-			if ((ActiveFighter + ActiveHealer) < n && ActiveHealer > (n - (ActiveFighter + ActiveHealer)))
+			if ((ActiveFighter + ActiveHealer) < n)
 			{
+				icenum = icenum - iced;
 				for (int i = 0; i < ActiveFreezer; i++)
 				{
 					Q_ActiveFreezer.dequeue(freezer);
-					if (i < firenum - (ActiveFighter + ActiveHealer))
+					if (i < icenum)
 						if(!freezer->isFrosted())
 							if (BCastle.frostEnemy(freezer))
-								FrostedFreezer++;
+								FrostedFreezer++; //m3dna4 m7tageen el iced foo2y ya gege
 					Q_ActiveFreezer.enqueue(freezer);
 				}
 			}
@@ -890,7 +902,7 @@ GAME_STATUS Battle::runTimeStep()
 	
 
 	//check if all enemies killed return win
-	if ((Q_ActiveFighter.size() + Q_ActiveFreezer.getC() + S_ActiveHealer.getCount()) == 0)
+	if (EnemyCount == Q_Killed.getC())
 		return WIN;
 	else return IN_PROGRESS;
 }

@@ -346,7 +346,7 @@ PROG_MODE	GUI::getGUIMode() const
 	PROG_MODE Mode;
 	do
 	{
-		PrintMessage("Please select GUI mode: (1)Interactive, (2)StepByStep, (3)Silent, (4)DEMO... (5)SIMULATOR ");
+		PrintMessage("Please select GUI mode: (1)Interactive, (2)StepByStep, (3)Silent");
 		string S = GetString();
 		Mode = (PROG_MODE) (atoi(S.c_str())-1);
 	}

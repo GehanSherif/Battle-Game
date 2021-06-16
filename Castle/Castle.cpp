@@ -12,6 +12,14 @@ void Castle::SetHealth(double h)
 		Health = 0; // killed
 }
 
+void Castle::SetOriginalHealth(double h)
+{
+	if (h > 0)
+		originalHealth = h;
+	else
+		originalHealth = 0; // killed
+}
+
 double Castle::GetHealth() const
 {
 	return Health;
@@ -63,10 +71,33 @@ bool Castle::frostEnemy(Enemy* enemy)
 
 void Castle::sendSS(int destiny)
 {
-	if (totalSentSS == 3)
+	if (totalSentSS == 3) //max is three
 		return;
 	totalSentSS++;
+	superSoliders.enqueue(new SuperSolider(destiny, 0.2*Health));
 }
+
+void Castle::useHealerTools(Enemy* healer)
+{
+	Healer* H = dynamic_cast<Healer*>(healer);
+	if (H == nullptr)
+		return;
+	if (!(H->isDead()) && H->GetDistance() > 5) //must be dead and within 5 meters
+		return;
+
+	Health += H->getPower();
+}
+
+bool Castle::checkThreshold()
+{
+	if (Health < 0.3 * originalHealth)
+		return true;
+	else
+		return false;
+}
+
+
+
 
 void Castle::SetmaxAttack(int n)
 {
@@ -98,9 +129,7 @@ void Castle::setFreezingThreshold(double th)
 }
 Castle::Castle()
 {
-	superSoliders.enqueue(new SuperSolider(1));
-	superSoliders.enqueue(new SuperSolider(2));
-	superSoliders.enqueue(new SuperSolider(3));
+
 }
 bool Castle::IsFrosted() const
 {
@@ -115,4 +144,9 @@ double Castle::getFreezingThreshold() const
 double Castle::getTotalDamage() const
 {
 	return totalDamage;
+}
+
+Queue<SuperSolider*>* Castle::getPtrSS()
+{
+	return &superSoliders;
 }

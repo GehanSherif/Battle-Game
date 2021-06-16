@@ -2,11 +2,10 @@
 #include <math.h>
 
 
-SuperSolider::SuperSolider(int id)
+
+SuperSolider::SuperSolider(int Destiny, int health) : Destiny(Destiny), speed(3), health(health)
 {
-	ssID = id;
-	Distance = 1;
-	Destiny = 1;	//acts as a guard in case of accidental calls to move()
+	Distance = 2;
 }
 
 int SuperSolider::getDistance()
@@ -19,10 +18,15 @@ int SuperSolider::getDestiny()
 	return Destiny;
 }
 
-void SuperSolider::setDestiny(int d)
+bool SuperSolider::isDead() const
 {
-	Destiny = d;
+	if (health == 0)
+		return true;
+	else
+		return false;
 }
+
+
 
 void SuperSolider::move()
 {
@@ -32,4 +36,12 @@ void SuperSolider::move()
 	}
 	else
 		Distance = Destiny;
+}
+
+void SuperSolider::receiveDamage(double damage)
+{
+	if (health - damage <= 0)
+		health = 0;
+	else
+		health -= damage;
 }

@@ -159,6 +159,11 @@ int Enemy::getfirstShotTime() const
 	return firstShotTime;
 }
 
+int Enemy::getPower() const
+{
+	return power;
+}
+
 
 
 int Enemy::GetArrvTime() const
@@ -175,6 +180,8 @@ void Enemy::decrementReload()
 
 void Enemy::meltIce()
 {
+	if (currentFrost == 0)
+		return;
 	currentFrost -= 0.1 * (currentHealth + power);
 }
 

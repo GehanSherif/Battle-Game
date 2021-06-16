@@ -151,22 +151,7 @@ void Battle::AddAllListsToDrawingList()
 
 }
 
-//check the inactive list and activate all enemies that has arrived
 void Battle::ActivateEnemies()
-{
-	Enemy *pE;
-	while( Q_Inactive.peekFront(pE) )	//as long as there are more inactive enemies
-	{
-		if(pE->GetArrvTime() > CurrentTimeStep )	//no more arrivals at current time
-			return;
-				
-		Q_Inactive.dequeue(pE);	//remove enemy from the queue
-		pE->SetStatus(ACTV);	//make status active
-		//AddtoDemoList(pE);		//move it to demo list (for demo purposes)
-	}
-}
-
-void Battle::ActivateEnemiesSimulator()
 {
 	Enemy* pE;
 	while (Q_Inactive.peekFront(pE))	//as long as there are more inactive enemies
@@ -262,6 +247,7 @@ void Battle::ImportInputFile()
 	getline(stream, N,  ' ');
 	getline(stream, CP, ' ');
 	BCastle.SetHealth(stoi(CH));
+	BCastle.SetOriginalHealth(stoi(CH));
 	BCastle.SetcasltePower(stoi(CP));
 	BCastle.SetmaxAttack(stoi(N));
 	BCastle.setFreezingThreshold(BCastle.GetHealth()*0.33);
@@ -424,6 +410,11 @@ void Battle::ExportOutputFile(GAME_STATUS gameStatus)
 		fout << "Average First-Shot Delay for killed = " << 1.0 * sumFirstShotDelay / TotalKilled << endl;
 		fout << "Average Kill Delay for killed = " << 1.0 * sumKillDelay / TotalKilled << endl;
 	}
+}
+
+int Battle::getMaxEnemDist() //needs implementation
+{
+	return 0;
 }
 
 int Battle::getCurrentTimeStep()
@@ -599,7 +590,7 @@ int Battle::getCurrentTimeStep()
 GAME_STATUS Battle::runTimeStep()
 {
 	//enemies activate, enemies walking, enemies acting, enemies reloading, enemy picking criteria
-	ActivateEnemiesSimulator();
+	ActivateEnemies();
 	Queue<Fighter*> TempActiveFighter;
 	ArrayStack<Healer*> TempActiveHealer;
 	Fighter* fighter;
@@ -617,9 +608,10 @@ GAME_STATUS Battle::runTimeStep()
 		if (i < ActiveFighter)
 		{
 			Q_ActiveFighter.dequeueMax(fighter);
-			if (!(fighter->isFrosted())) //lazem el check bta3 frosted da fe kollo
+			if (!(fighter->isFrosted()))
 			{
 				fighter->Move();
+				fighter->meltIce(); //MELT ICE FOR ALL
 				if (fighter->getReloading() == 0)
 				{
 					fighter->attackCastle(&BCastle);
@@ -640,6 +632,7 @@ GAME_STATUS Battle::runTimeStep()
 			if (!(freezer->isFrosted()))
 			{
 				freezer->Move();
+				freezer->meltIce();
 				if (freezer->getReloading() == 0)
 				{
 					freezer->frostCastle(&BCastle);
@@ -661,6 +654,7 @@ GAME_STATUS Battle::runTimeStep()
 		if (!(healer->isFrosted()))
 		{
 			healer->Move();
+			healer->meltIce();
 			for (int j = 0; j < max; j++)
 			{
 				if (j < ActiveFighter)
@@ -738,6 +732,7 @@ GAME_STATUS Battle::runTimeStep()
 				if (BCastle.attackEnemy(healer))
 				{
 					Q_Killed.enqueue(healer);
+					BCastle.useHealerTools(healer);
 					KilledHealer++;
 				}
 				else
@@ -899,7 +894,8 @@ GAME_STATUS Battle::runTimeStep()
 			S_ActiveHealer.push(healer);
 		}
 	}
-	
+
+	//add the logic of SS here
 
 	//check if all enemies killed return win
 	if (EnemyCount == Q_Killed.getC())

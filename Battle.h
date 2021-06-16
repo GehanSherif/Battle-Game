@@ -48,8 +48,7 @@ public:
 	void AddAllListsToDrawingList(); //Add enemy lists (inactive, active,.....) to drawing list to be displayed on user interface
 	Castle * GetCastle();
 	void RunSimulation();
-	void ActivateEnemies();		//check the inactive list and activate all enemies that has arrived
-	void ActivateEnemiesSimulator();
+	void ActivateEnemies();
 	GAME_STATUS InteractiveMode();
 
 	void AddtoDemoList(Enemy* Ptr); //Add Enemy to the demo queue of enemies (for demo purposes only)
@@ -57,6 +56,8 @@ public:
 
 	void ImportInputFile();
 	void ExportOutputFile(GAME_STATUS gameStatus);
+
+	int getMaxEnemDist(); //gets the distance of maximum number of enemies
 
 	static int getCurrentTimeStep();
 	GAME_STATUS runTimeStep();

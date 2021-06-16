@@ -2,19 +2,24 @@
 class SuperSolider
 {
 private:
-	int ssID, Distance, Destiny;
-	const int speed = 3;
+	int Distance;
+	const int Destiny;
+	const int speed;
+	int health;
 
 public:
-	SuperSolider(int id);
+	SuperSolider(int Destiny, int health);
 
 	//getters
 	int getDistance();
 	int getDestiny();
+	bool isDead() const;
 
 	//setters
-	void setDestiny(int d);
+
 	
 	//operations
+	void receiveDamage(double damage);
 	void move();
+
 };

@@ -49,6 +49,7 @@ public:
 	int getReloading() const;
 	int getSpeed() const;
 	int getKilledTime() const;
+	int getPower() const;
 	bool isFrosted() const;
 	int getfirstShotTime() const;
 	bool isDead() const;

@@ -1,12 +1,13 @@
 #pragma once
 #include "..\Defs.h"
-#include "../Enemies/Enemy.h"
 #include "../SuperSolider.h"
 #include "../Generic_DS/Queue.h"
+#include "../Enemies/Healer.h"
 
 class Castle
 {
 	//inputted from file
+	double originalHealth;
 	double Health;
 	int maxAttack; //Max number of enemies a castle can attack at any time step
 	double castlePower;
@@ -30,10 +31,12 @@ public:
 	double GetcastlePower() const;
 	double getFreezingThreshold() const;
 	double getTotalDamage() const;
+	Queue<SuperSolider*>* getPtrSS();
 
 
 	//setters
 	void SetHealth(double h);
+	void SetOriginalHealth(double h);
 	void SetmaxAttack(int n);
 	void SetcasltePower(double POW);
 	void SetFrosted(bool f);
@@ -46,6 +49,9 @@ public:
 	bool attackEnemy(Enemy*); //returns true if the enemy is dead due to the attack
 	bool frostEnemy(Enemy*);
 	void sendSS(int destiny);
+	void useHealerTools(Enemy* healer);
+	bool checkThreshold();
+
 
 };
 

@@ -1,5 +1,6 @@
 #include "Fighter.h"
 #include "../Battle.h"
+#include "../SuperSolider.h"
 
 
 Fighter::Fighter(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod)
@@ -34,7 +35,7 @@ void Fighter::attackCastle(Castle* castle)
     if (getReloading() != 0) //must equal zero
         return;
 
-    if(firstShotTime == 0)
+    if (firstShotTime == 0)
         firstShotTime = Battle::getCurrentTimeStep();
 
     double k;
@@ -42,8 +43,29 @@ void Fighter::attackCastle(Castle* castle)
         k = 0.5;
     else
         k = 1.0;
-    double damage = (k * power) / Distance;
-    castle->receiveDamage(damage);
+
+
+    if (castle->getPtrSS()->isEmpty())
+    {
+        //No SS so attack the caslte itself
+
+
+        double damage = (k * power) / Distance;
+        castle->receiveDamage(damage);
+    }
+    else //There are SSs so attack them
+    {
+        SuperSolider* ss = nullptr;
+        castle->getPtrSS()->dequeue(ss);
+        double damage = (k * power) / 2;
+        ss->receiveDamage(damage);
+        if (ss->isDead())
+            delete ss;
+        else
+            castle->getPtrSS()->enqueue(ss);
+    }
+
+
 }
 
 //This function returns the priority of a fighter to be attacked by the castle and 

@@ -8,6 +8,8 @@
 #include <string>
 #include <stdlib.h>
 #include <ctime>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 int Battle::CurrentTimeStep = 0;
@@ -42,8 +44,10 @@ void Battle::RunSimulation()
 		status = InteractiveMode();
 		break;
 	case MODE_STEP:
+		status = StepByStepMode();
 		break;
 	case MODE_SLNT:
+		status = SilentMode();
 		break;
 	}
 	ExportOutputFile(status);
@@ -65,7 +69,6 @@ GAME_STATUS Battle::InteractiveMode()
 	GAME_STATUS gameStatus= IN_PROGRESS;
 	while (gameStatus == IN_PROGRESS)
 	{
-		//pGUI->PrintMessage("Click to continue");
 		pGUI->waitForClick();
 		CurrentTimeStep++;
 		gameStatus=runTimeStep();
@@ -80,6 +83,52 @@ GAME_STATUS Battle::InteractiveMode()
 			ActiveCount, FrostedCount, ActiveFighters, ActiveFreezers, ActiveHealers,
 			FrostedFighter, FrostedHealer, FrostedFreezer, KilledFighter, KilledFreezers, KilledHealer);
 	}
+	pGUI->waitForClick();
+	return gameStatus;
+}
+
+GAME_STATUS Battle::StepByStepMode()
+{
+
+	int ActiveCount, ActiveFighters, ActiveHealers, ActiveFreezers, FrostedCount;
+	CurrentTimeStep = 0;
+	ImportInputFile();
+	AddAllListsToDrawingList();
+	pGUI->UpdateInterface(CurrentTimeStep, BCastle.GetHealth(), BCastle.IsFrosted());	//upadte interface to show the initial case where all enemies are still inactive
+	GAME_STATUS gameStatus = IN_PROGRESS;
+	while (gameStatus == IN_PROGRESS)
+	{
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+		CurrentTimeStep++;
+		gameStatus = runTimeStep();
+		pGUI->ResetDrawingList();
+		AddAllListsToDrawingList();
+		ActiveFighters = Q_ActiveFighter.size() - FrostedFighter;
+		ActiveHealers = S_ActiveHealer.getCount() - FrostedHealer;
+		ActiveFreezers = Q_ActiveFreezer.getC() - FrostedFreezer;
+		ActiveCount = ActiveFighters + ActiveHealers + ActiveFreezers;
+		FrostedCount = FrostedFighter + FrostedFreezer + FrostedHealer;
+		pGUI->UpdateInterface(CurrentTimeStep, BCastle.GetHealth(), BCastle.IsFrosted(), Q_Killed.getC(),
+			ActiveCount, FrostedCount, ActiveFighters, ActiveFreezers, ActiveHealers,
+			FrostedFighter, FrostedHealer, FrostedFreezer, KilledFighter, KilledFreezers, KilledHealer);
+	}
+		
+	pGUI->waitForClick();
+	return gameStatus;
+}
+
+GAME_STATUS Battle::SilentMode()
+{
+	CurrentTimeStep = 0;
+	
+	ImportInputFile();
+	GAME_STATUS gameStatus = IN_PROGRESS;
+	while (gameStatus == IN_PROGRESS)
+	{
+		CurrentTimeStep++;
+		gameStatus = runTimeStep();
+	}
+
 	pGUI->waitForClick();
 	return gameStatus;
 }
@@ -621,8 +670,10 @@ GAME_STATUS Battle::runTimeStep()
 					fighter->decrementReload();
 			}
 			else
+			{
 				if (fighter->reduceFrostedTime())
 					FrostedFighter--;
+			}
 			TempActiveFighter.enqueue(fighter);
 		}
 
@@ -642,8 +693,10 @@ GAME_STATUS Battle::runTimeStep()
 					freezer->decrementReload();
 			}
 			else
+			{
 				if (freezer->reduceFrostedTime())
 					FrostedFreezer--;
+			}
 			Q_ActiveFreezer.enqueue(freezer); //Mlha4 lazma n3ml temp lelfreezer
 		}
 	}
@@ -677,8 +730,10 @@ GAME_STATUS Battle::runTimeStep()
 
 		}
 		else
+		{
 			if (healer->reduceFrostedTime())
 				FrostedHealer--;
+		}
 		TempActiveHealer.push(healer);
 	}
 	max = ActiveFighter;
@@ -714,10 +769,13 @@ GAME_STATUS Battle::runTimeStep()
 			if (Q_ActiveFighter.size() == 0)
 				break;
 			Q_ActiveFighter.dequeueMax(fighter);
+			ENMY_STATUS preType = (fighter->GetStatus());
 			if (BCastle.attackEnemy(fighter))
 			{
 				Q_Killed.enqueue(fighter);
 				KilledFighter++;
+				if (preType==FRST)
+					FrostedFighter--;
 			}
 			else
 				TempActiveFighter.enqueue(fighter);
@@ -729,36 +787,38 @@ GAME_STATUS Battle::runTimeStep()
 				if (S_ActiveHealer.getCount() == 0)
 					break;
 				S_ActiveHealer.pop(healer);
+				ENMY_STATUS preType = (healer->GetStatus());
 				if (BCastle.attackEnemy(healer))
 				{
 					Q_Killed.enqueue(healer);
 					BCastle.useHealerTools(healer);
 					KilledHealer++;
+					if (preType==FRST)
+						FrostedHealer--;
 				}
 				else
 					TempActiveHealer.push(healer);
+
 			}
 			
 		}
 		if ((ActiveFighter + ActiveHealer) < firenum)
 		{
-			for (int i = 0; i < ActiveFreezer; i++)
+			for (int i = 0; i < (firenum- (ActiveFighter + ActiveHealer)); i++)
 			{
 				if (Q_ActiveFreezer.getC() == 0)
 					break;
 				Q_ActiveFreezer.dequeue(freezer);
-				if (i < firenum - (ActiveFighter + ActiveHealer))
-				{
+					ENMY_STATUS preType = (freezer->GetStatus());
 					if (BCastle.attackEnemy(freezer))
 					{
 						Q_Killed.enqueue(freezer);
 						KilledFreezers++;
+						if (preType==FRST)
+							FrostedFreezer--;
 					}
 					else
 						Q_ActiveFreezer.enqueue(freezer);
-				}
-				else
-					Q_ActiveFreezer.enqueue(freezer);
 			}
 		}
 		int icenum = n-firenum;
@@ -800,18 +860,15 @@ GAME_STATUS Battle::runTimeStep()
 					TempActiveHealer.push(healer);
 				}
 			}
-			if ((ActiveFighter + ActiveHealer) < n)
+			icenum = icenum - iced + firenum;
+			for (int i = firenum; i < ActiveFreezer; i++)
 			{
-				icenum = icenum - iced;
-				for (int i = 0; i < ActiveFreezer; i++)
-				{
-					Q_ActiveFreezer.dequeue(freezer);
-					if (i < icenum)
-						if(!freezer->isFrosted())
-							if (BCastle.frostEnemy(freezer))
-								FrostedFreezer++; //m3dna4 m7tageen el iced foo2y ya gege
-					Q_ActiveFreezer.enqueue(freezer);
-				}
+				Q_ActiveFreezer.dequeue(freezer);
+				if (i < icenum)
+					if (!freezer->isFrosted())
+						if (BCastle.frostEnemy(freezer))
+							FrostedFreezer++; //m3dna4 m7tageen el iced foo2y ya gege
+				Q_ActiveFreezer.enqueue(freezer);
 			}
 		}
 		int TempAF = TempActiveFighter.getC();
@@ -834,10 +891,13 @@ GAME_STATUS Battle::runTimeStep()
 			if (Q_ActiveFighter.size() == 0)
 				break;
 			Q_ActiveFighter.dequeueMax(fighter);
+			ENMY_STATUS preType = (fighter->GetStatus());
 			if (BCastle.attackEnemy(fighter))
 			{
 				Q_Killed.enqueue(fighter);
 				KilledFighter++;
+				if (preType==FRST)
+					FrostedFighter--;
 			}
 			else
 				TempActiveFighter.enqueue(fighter);
@@ -849,12 +909,14 @@ GAME_STATUS Battle::runTimeStep()
 				if (S_ActiveHealer.getCount() == 0)
 					break;
 				S_ActiveHealer.pop(healer);
+				ENMY_STATUS preType = (healer->GetStatus());
 				if (BCastle.attackEnemy(healer))
 				{
 					Q_Killed.enqueue(healer);
 					KilledHealer++;
+					if (preType==FRST)
+						FrostedHealer--;
 				}
-					
 				else
 					TempActiveHealer.push(healer);
 			}
@@ -869,10 +931,13 @@ GAME_STATUS Battle::runTimeStep()
 				Q_ActiveFreezer.dequeue(freezer);
 				if (i < n - (ActiveFighter + ActiveHealer))
 				{
+					ENMY_STATUS preType = (freezer->GetStatus());
 					if (BCastle.attackEnemy(freezer))
 					{
 						Q_Killed.enqueue(freezer);
 						KilledFreezers++;
+						if (preType==FRST)
+							FrostedFreezer--;
 					}
 					else
 						Q_ActiveFreezer.enqueue(freezer);

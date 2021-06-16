@@ -35,6 +35,8 @@ ENMY_STATUS Enemy::GetStatus() const
 bool Enemy::recieveDamage(double damage)
 {
 	currentHealth -= damage;
+	if (firstShotTime == 0)
+		firstShotTime == Battle::getCurrentTimeStep();
 	if (currentHealth <= 0)
 	{
 		currentHealth = 0;
@@ -63,7 +65,8 @@ bool Enemy::reduceFrostedTime()
 
 bool Enemy::recieveFrost(double frost)
 {
-
+	if (firstShotTime == 0)
+		firstShotTime == Battle::getCurrentTimeStep();
 	if (currentFrost + frost >= frostThreshold)
 	{
 		currentFrost = 0;

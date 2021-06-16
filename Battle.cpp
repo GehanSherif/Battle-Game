@@ -337,7 +337,6 @@ void Battle::ImportInputFile()
 			enemy = new Freezer(stoi(ID), stoi(AT), stoi(H), stoi(POW), stoi(SPD), stoi(RLD));
 			FreezerCount++;
 		}
-		EnemyCount++;
 		Q_Inactive.enqueue(enemy);
 	}
 }
@@ -463,6 +462,7 @@ void Battle::ExportOutputFile(GAME_STATUS gameStatus)
 
 int Battle::getMaxEnemDist() //needs implementation
 {
+
 	return 0;
 }
 
@@ -648,7 +648,7 @@ GAME_STATUS Battle::runTimeStep()
 	int ActiveFighter = Q_ActiveFighter.size();
 	int ActiveFreezer = Q_ActiveFreezer.getC();
 	int ActiveHealer = S_ActiveHealer.getCount();
-	int max = ActiveFighter; 
+	int max = ActiveFighter;
 	if (max < ActiveFreezer)
 		max = ActiveFreezer;
 
@@ -700,7 +700,7 @@ GAME_STATUS Battle::runTimeStep()
 			Q_ActiveFreezer.enqueue(freezer); //Mlha4 lazma n3ml temp lelfreezer
 		}
 	}
-	
+
 	for (int i = 0; i < ActiveHealer; i++)
 	{
 		S_ActiveHealer.pop(healer);
@@ -744,7 +744,7 @@ GAME_STATUS Battle::runTimeStep()
 		if (i < ActiveFighter)
 		{
 			TempActiveFighter.dequeue(fighter);
-			Q_ActiveFighter.insert(fighter, fighter->getPriority()); 
+			Q_ActiveFighter.insert(fighter, fighter->getPriority());
 		}
 		if (i < ActiveHealer)
 		{
@@ -761,7 +761,7 @@ GAME_STATUS Battle::runTimeStep()
 	int n = BCastle.GetmaxAttack();
 	srand(time(0));
 	int randomnum = rand();
-	if ((randomnum % 2 )== 0)
+	if ((randomnum % 2) == 0)
 	{
 		int firenum = n * 0.8;
 		for (int i = 0; i < firenum; i++)
@@ -774,7 +774,7 @@ GAME_STATUS Battle::runTimeStep()
 			{
 				Q_Killed.enqueue(fighter);
 				KilledFighter++;
-				if (preType==FRST)
+				if (preType == FRST)
 					FrostedFighter--;
 			}
 			else
@@ -793,83 +793,80 @@ GAME_STATUS Battle::runTimeStep()
 					Q_Killed.enqueue(healer);
 					BCastle.useHealerTools(healer);
 					KilledHealer++;
-					if (preType==FRST)
+					if (preType == FRST)
 						FrostedHealer--;
 				}
 				else
 					TempActiveHealer.push(healer);
 
 			}
-			
+
 		}
 		if ((ActiveFighter + ActiveHealer) < firenum)
 		{
-			for (int i = 0; i < (firenum- (ActiveFighter + ActiveHealer)); i++)
+			for (int i = 0; i < (firenum - (ActiveFighter + ActiveHealer)); i++)
 			{
-				if (Q_ActiveFreezer.getC() == 0)
+				if (Q_ActiveFreezer.getC() == 0 || Q_ActiveFreezer.getC() < i)
 					break;
 				Q_ActiveFreezer.dequeue(freezer);
-					ENMY_STATUS preType = (freezer->GetStatus());
-					if (BCastle.attackEnemy(freezer))
-					{
-						Q_Killed.enqueue(freezer);
-						KilledFreezers++;
-						if (preType==FRST)
-							FrostedFreezer--;
-					}
-					else
-						Q_ActiveFreezer.enqueue(freezer);
+				ENMY_STATUS preType = (freezer->GetStatus());
+				if (BCastle.attackEnemy(freezer))
+				{
+					Q_Killed.enqueue(freezer);
+					KilledFreezers++;
+					if (preType == FRST)
+						FrostedFreezer--;
+				}
+				else
+					Q_ActiveFreezer.enqueue(freezer);
 			}
 		}
-		int icenum = n-firenum;
-		for (int i = 0; i < icenum; i++)
+		int icenum = n - firenum;
+		int iced = 0;
+		if (ActiveFighter > firenum)
 		{
-			int iced = 0;
-			if (ActiveFighter > firenum)
+			for (int i = 0; i < icenum; i++)
 			{
-				for (int i = 0; i < icenum; i++)
-				{
-					if (Q_ActiveFighter.size() == 0)
-						break;
-					Q_ActiveFighter.dequeueMax(fighter);
-					if(!fighter->isFrosted())
-						if (BCastle.frostEnemy(fighter))
-						{
-							FrostedFighter++;
-							iced++;
-						}
-					TempActiveFighter.enqueue(fighter);
-				}
+				if (Q_ActiveFighter.size() == 0)
+					break;
+				Q_ActiveFighter.dequeueMax(fighter);
+				if (!fighter->isFrosted())
+					if (BCastle.frostEnemy(fighter))
+					{
+						FrostedFighter++;
+						iced++;
+					}
+				TempActiveFighter.enqueue(fighter);
 			}
-			if (ActiveFighter < n) // && ActiveHealer>(n- ActiveFighter)
+		}
+		if (ActiveFighter < n) // && ActiveHealer>(n- ActiveFighter)
+		{
+			icenum = icenum - iced;
+			iced = 0;
+			for (int i = 0; i < icenum; i++)
 			{
-				icenum = icenum - iced;
-				iced = 0;
-				for (int i = 0; i < icenum; i++)
-				{
-					if (S_ActiveHealer.getCount() == 0)
-						break;
-					S_ActiveHealer.pop(healer);
-					if(!healer->isFrosted())
-						if (BCastle.frostEnemy(healer))
-						{
-							FrostedHealer++;
-							iced++;
-						}
+				if (S_ActiveHealer.getCount() == 0)
+					break;
+				S_ActiveHealer.pop(healer);
+				if (!healer->isFrosted())
+					if (BCastle.frostEnemy(healer))
+					{
+						FrostedHealer++;
+						iced++;
+					}
 
-					TempActiveHealer.push(healer);
-				}
+				TempActiveHealer.push(healer);
 			}
-			icenum = icenum - iced + firenum;
-			for (int i = firenum; i < ActiveFreezer; i++)
-			{
-				Q_ActiveFreezer.dequeue(freezer);
-				if (i < icenum)
-					if (!freezer->isFrosted())
-						if (BCastle.frostEnemy(freezer))
-							FrostedFreezer++; //m3dna4 m7tageen el iced foo2y ya gege
-				Q_ActiveFreezer.enqueue(freezer);
-			}
+		}
+		icenum = icenum - iced + firenum-ActiveFighter-ActiveHealer;
+		for (int i = firenum-ActiveFighter-ActiveHealer; i < ActiveFreezer; i++)
+		{
+			Q_ActiveFreezer.dequeue(freezer);
+			if (i < icenum)
+				if (!freezer->isFrosted())
+					if (BCastle.frostEnemy(freezer))
+						FrostedFreezer++; //m3dna4 m7tageen el iced foo2y ya gege
+			Q_ActiveFreezer.enqueue(freezer);
 		}
 		int TempAF = TempActiveFighter.getC();
 		for (int i = 0; i < TempAF; i++)
@@ -963,6 +960,8 @@ GAME_STATUS Battle::runTimeStep()
 	//add the logic of SS here
 
 	//check if all enemies killed return win
+	int nn = EnemyCount;
+	int mm = Q_Killed.getC();
 	if (EnemyCount == Q_Killed.getC())
 		return WIN;
 	else return IN_PROGRESS;

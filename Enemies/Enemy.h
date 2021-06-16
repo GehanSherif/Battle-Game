@@ -29,7 +29,7 @@ protected:
 
 
 	int reloadPeriod;	//Time an Enemy takes to reload
-	int firstShotTime;	//Time at which an Enemy was first shot by the castle
+	int firstShotTime=0;	//Time at which an Enemy was first shot by the castle
 	int killedTime;		//Time at which an Enemy was killed
 
 	int timeToEndReload;

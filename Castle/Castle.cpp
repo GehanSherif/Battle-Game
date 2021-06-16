@@ -82,7 +82,7 @@ void Castle::useHealerTools(Enemy* healer)
 	Healer* H = dynamic_cast<Healer*>(healer);
 	if (H == nullptr)
 		return;
-	if (!(H->isDead()) && H->GetDistance() > 5) //must be dead and within 5 meters
+	if (!(H->isDead()) && H->GetDistance() <= 5) //must be dead and within 5 meters
 		return;
 
 	Health += H->getPower();

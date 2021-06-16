@@ -325,7 +325,7 @@ void GUI::AddToDrawingList(SuperSolider* pSS)
 	pDitem->ID = 0;
 	pDitem->distance = pSS->getDistance();
 	pDitem->region = ACTV_REG;	//map status to drawing region
-	pDitem->clr = GOLD;
+	pDitem->clr = BLACK;
 	/////////////
 	/////////////
 

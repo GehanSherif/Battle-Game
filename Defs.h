@@ -47,5 +47,9 @@ enum GAME_STATUS
 	STATUS_CNT
 };
 
-
+struct Dist
+{
+	int position;
+	int number=0;
+};
 

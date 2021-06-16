@@ -460,178 +460,101 @@ void Battle::ExportOutputFile(GAME_STATUS gameStatus)
 	}
 }
 
-int Battle::getMaxEnemDist() //needs implementation
+int Battle::getMaxEnemDist()
 {
-
-	return 0;
+	Queue<Fighter*> TempActiveFighter;
+	ArrayStack<Healer*> TempActiveHealer;
+	Fighter* fighter;
+	Freezer* freezer;
+	Healer* healer;
+	int ActiveFighter = Q_ActiveFighter.size();
+	int ActiveFreezer = Q_ActiveFreezer.getC();
+	int ActiveHealer = S_ActiveHealer.getCount();
+	Queue<Dist*> Q_distance;
+	for (int i = 0; i < 60; i++)
+	{
+		Dist* distance;
+		distance->position = i + 1;
+		Q_distance.enqueue(distance);
+	}
+	Dist* distance;
+	for (int i = 0; i < ActiveFighter; i++)
+	{
+		Q_ActiveFighter.dequeueMax(fighter);
+		int position = fighter->GetDistance();
+		for (int i = 0; i < 60; i++)
+		{
+			if (distance->position == position)
+			{
+				distance->number++;
+				Q_distance.enqueue(distance);
+				break;
+			}
+			Q_distance.enqueue(distance);
+		}
+		TempActiveFighter.enqueue(fighter);
+	}
+	for (int i = 0; i < ActiveFighter; i++)
+	{
+		TempActiveFighter.dequeue(fighter);
+		Q_ActiveFighter.insert(fighter, fighter->getPriority());
+	}
+	for (int i = 0; i < ActiveHealer; i++)
+	{
+		S_ActiveHealer.pop(healer);
+		int position = fighter->GetDistance();
+		for (int i = 0; i < 60; i++)
+		{
+			if (distance->position == position)
+			{
+				distance->number++;
+				Q_distance.enqueue(distance);
+				break;
+			}
+			Q_distance.enqueue(distance);
+		}
+		TempActiveHealer.push(healer);
+	}
+	for (int i = 0; i < ActiveHealer; i++)
+	{
+		TempActiveHealer.pop(healer);
+		S_ActiveHealer.push(healer);
+	}
+	for (int i = 0; i < ActiveFreezer; i++)
+	{
+		Q_ActiveFreezer.dequeue(freezer);
+		int position = fighter->GetDistance();
+		for (int i = 0; i < 60; i++)
+		{
+			Q_distance.dequeue(distance);
+			if (distance->position == position)
+			{
+				distance->number++;
+				Q_distance.enqueue(distance);
+				break;
+			}
+			Q_distance.enqueue(distance);
+		}
+		Q_ActiveFreezer.enqueue(freezer);
+	}
+	int max = 0;
+	int index = 0;
+	for (int i = 0; i < 60; i++)
+	{
+		Q_distance.enqueue(distance);
+		if (max < distance->number)
+		{
+			max = distance->number;
+			index = distance->position;
+		}
+	}
+	return index;
 }
 
 int Battle::getCurrentTimeStep()
 {
 	return CurrentTimeStep;
 }
-
-//void Battle::RunSimulation_Once()
-//{
-//	Enemy* pE;
-//	Healer* pH;
-//	Freezer* pFreezer;
-//	Fighter* pFighter;
-//	int freezedFightersNo = 0, freezedHealersNo = 0, freezedFreezersNo = 0, killedActiveEnemiesNo = 0, defrostedEnemies = 0, killedFrostedEnemies = 0;
-//	int cH = S_ActiveHealer.getCount();
-//	int cFreezer = Q_ActiveFreezer.getC();
-//	int cFighter = Q_ActiveFighter.size();
-//
-//	//ii. Move all active enemies of all types according to their speeds and movement
-//	//pattern.
-//
-//
-//	//1- Moving Fighter
-//	PriorityQueue<Fighter*> TempActiveFighterPQ(ActiveFighter);
-//	for (int i = 0; i < ActiveFighter; i++)
-//	{
-//		Q_ActiveFighter.dequeueMax(pFighter);
-//		if(pFighter->GetStatus() == ACTV)
-//		//pFighter->DecrementDist();
-//		TempActiveFighterPQ.insert(pFighter, pFighter->getPriority());
-//	}
-//	for (int i = 0; i < ActiveFighter; i++)
-//	{
-//		TempActiveFighterPQ.dequeueMax(pFighter);
-//		Q_ActiveFighter.insert(pFighter, pFighter->getPriority());
-//	}
-//
-//	//2- Moving Freezer
-//	Queue<Freezer*> TempActiveFreezerQueue;
-//	for (int i = 0; i < ActiveFreezer; i++)
-//	{
-//		Q_ActiveFreezer.dequeue(pFreezer);
-//		if(pFreezer->GetStatus() == ACTV)
-//		//pFreezer->DecrementDist();
-//		TempActiveFreezerQueue.enqueue(pFreezer);
-//	}
-//	for (int i = 0; i < ActiveFreezer; i++)
-//	{
-//		TempActiveFreezerQueue.dequeue(pFreezer);
-//		Q_ActiveFreezer.enqueue(pFreezer);
-//	}
-//
-//
-//	//3- Moving Healer
-//	ArrayStack<Healer*> TempActiveHealerStack;
-//	for (int i = 0; i < ActiveHealer; i++)
-//	{
-//		S_ActiveHealer.pop(pH);
-//		if (pH->GetStatus() == ACTV)
-//		//pH->DecrementDist();
-//		TempActiveHealerStack.push(pH);
-//	}
-//	for (int i = 0; i < ActiveHealer; i++)
-//	{
-//		TempActiveHealerStack.pop(pH);
-//		S_ActiveHealer.push(pH);
-//	}
-//
-//	//iii. For each enemy type, pick two active enemies that are on top of list and
-//	//freeze them.
-//
-//	for (int i = 0; i < 2 ; i++)
-//	{
-//		if (!(Q_ActiveFighter.isEmpty()))
-//		{
-//			Q_ActiveFighter.dequeueMax(pFighter);
-//			frostEnemy(pFighter);
-//			//Q_Frosted.enqueue(pFighter);
-//			freezedFightersNo++;
-//		}
-//		if (!(Q_ActiveFreezer.isEmpty()))
-//		{
-//			Q_ActiveFreezer.dequeue(pFreezer);
-//			frostEnemy(pFreezer);
-//			//Q_Frosted.enqueue(pFreezer);
-//			freezedFreezersNo++;
-//		}
-//		if (!(S_ActiveHealer.isEmpty()))
-//		{
-//			S_ActiveHealer.pop(pH);
-//			frostEnemy(pH);
-//			//Q_Frosted.enqueue(pH);
-//			freezedHealersNo++;
-//		}
-//	}
-//
-//	//iv. Pick two previously frosted enemies and return them back to their normal
-//	//status.
-//
-//	for (int i = 0; i < 2; i++)
-//	{
-//		if (!(Q_Frosted.isEmpty()))
-//		{
-//			//Q_Frosted.dequeue(pE);
-//			//Healer
-//			if (dynamic_cast<Healer*>(pE) != nullptr)
-//			{
-//				pH = dynamic_cast<Healer*>(pE);
-//				DefrostEnemy(pH);
-//				S_ActiveHealer.push(pH);
-//			}
-//			//Freezer
-//			else if (dynamic_cast<Freezer*>(pE) != nullptr)
-//			{
-//				pFreezer = dynamic_cast<Freezer*>(pE);
-//				DefrostEnemy(pFreezer);
-//				Q_ActiveFreezer.enqueue(pFreezer);
-//			}
-//			else if (dynamic_cast<Fighter*>(pE) != nullptr)
-//			{
-//				pFighter = dynamic_cast<Fighter*>(pE);
-//				DefrostEnemy(pFighter);
-//				Q_ActiveFighter.insert(pFighter, pFighter->getPriority());
-//			}
-//		}
-//	}
-//
-//	//v. Kill one active enemy and one frosted enemy.
-//	//1- Active Enemy
-//	int x = rand() % 3;
-//	if (x == 0) //kill Active Fighter
-//	{
-//		if (!(Q_ActiveFighter.isEmpty()))
-//		{
-//			Q_ActiveFighter.dequeueMax(pFighter);
-//			KillEnemy(pFighter);
-//			Q_Killed.enqueue(pFighter);
-//		}
-//	}
-//	else if (x == 1) //kill active freezer
-//	{
-//		if (!(Q_ActiveFreezer.isEmpty()))
-//		{
-//			Q_ActiveFreezer.dequeue(pFreezer);
-//			KillEnemy(pFreezer);
-//			Q_Killed.enqueue(pFreezer);
-//		}
-//	}
-//	else if (x == 2) //kill active Healer
-//	{
-//		if (!(S_ActiveHealer.isEmpty()))
-//		{
-//			S_ActiveHealer.pop(pH);
-//			KillEnemy(pH);
-//			Q_Killed.enqueue(pH);
-//		}
-//	}
-//	//2- Frosted Enemy
-//	if (!(Q_Frosted.isEmpty()))
-//	{
-//		//Q_Frosted.dequeue(pE);
-//		KillEnemy(pE);
-//		Q_Killed.enqueue(pE);
-//	}
-//	
-//
-//
-//}
 
 
 

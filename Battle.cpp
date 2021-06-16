@@ -173,6 +173,7 @@ void Battle::AddAllListsToDrawingList()
 	int ActiveHealerCount;
 	int ActiveFighterCount;
 	int KilledCount;
+	int ssCount;
 	//Inactive
 	Enemy* const * EnemyList = Q_Inactive.toArray(InactiveCount);
 	for(int i=0; i<InactiveCount; i++)
@@ -197,6 +198,11 @@ void Battle::AddAllListsToDrawingList()
 	Enemy* const* KilledList = Q_Killed.toArray(KilledCount);
 	for (int i = 0; i < KilledCount; i++)
 		pGUI->AddToDrawingList(KilledList[i]);
+
+	//SS
+	SuperSolider* const* SS = BCastle.getPtrSS()->toArray(ssCount);
+	for (int i = 0; i < ssCount; i++)
+		pGUI->AddToDrawingList(SS[i]);
 
 }
 
@@ -461,9 +467,9 @@ void Battle::ExportOutputFile(GAME_STATUS gameStatus)
 	}
 }
 
-int Battle::getMaxEnemDist() //needs implementation
+int Battle::getMaxEnemDist() 
 {
-	return 0;
+	return 3;
 }
 
 int Battle::getCurrentTimeStep()
@@ -648,6 +654,7 @@ GAME_STATUS Battle::runTimeStep()
 	int ActiveFighter = Q_ActiveFighter.size();
 	int ActiveFreezer = Q_ActiveFreezer.getC();
 	int ActiveHealer = S_ActiveHealer.getCount();
+	static int thresholdTimeSteps = 0;
 	int max = ActiveFighter; 
 	if (max < ActiveFreezer)
 		max = ActiveFreezer;
@@ -961,6 +968,10 @@ GAME_STATUS Battle::runTimeStep()
 	}
 
 	//add the logic of SS here
+	if (true) //BCastle.checkThreshold()
+	{
+		BCastle.sendSS(getMaxEnemDist());
+	}
 
 	//check if all enemies killed return win
 	if (EnemyCount == Q_Killed.getC())

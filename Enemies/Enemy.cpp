@@ -8,7 +8,6 @@ Enemy::Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpee
 	, frostThreshold(0), totalFrostedTime(relPeriod)
 {
 	SetStatus(INAC);
-	
 	Distance = MaxDistance;
 	timeToEndReload = 0;
 	currentFrost = 0;

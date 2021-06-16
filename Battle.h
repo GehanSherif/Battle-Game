@@ -51,6 +51,8 @@ public:
 	void ActivateEnemies();		//check the inactive list and activate all enemies that has arrived
 	void ActivateEnemiesSimulator();
 	GAME_STATUS InteractiveMode();
+	GAME_STATUS StepByStepMode();
+	GAME_STATUS SilentMode();
 
 	void AddtoDemoList(Enemy* Ptr); //Add Enemy to the demo queue of enemies (for demo purposes only)
 	void Demo_UpdateEnemies();	//Randomly update enemies distance/status (for demo purposes)
@@ -60,4 +62,5 @@ public:
 
 	static int getCurrentTimeStep();
 	GAME_STATUS runTimeStep();
+
 };

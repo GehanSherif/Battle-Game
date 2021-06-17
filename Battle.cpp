@@ -408,8 +408,8 @@ GAME_STATUS Battle::runTimeStep()
 {
 	//enemies activate, enemies walking, enemies acting, enemies reloading, enemy picking criteria
 	ActivateEnemies();
-	Queue<Healer*> Q_ActiveHealer;            
-	Queue<Freezer*> Q_ActiveFreezer;			
+	Queue<Healer*> Q_ActiveHealer;
+	Queue<Freezer*> Q_ActiveFreezer;
 	PriorityQueue<Fighter*> Q_ActiveFighter;
 	ArrayStack<Healer*> S_ActiveHealer;
 	Queue<Enemy*> ff;
@@ -507,9 +507,7 @@ GAME_STATUS Battle::runTimeStep()
 		}
 		Q_ActiveHealer.enqueue(healer);
 	}
-	//Check if the castle destroyed return loss
-	if (BCastle.GetHealth() == 0)
-		return LOSS;
+
 
 	//castle attacking
 	int n = BCastle.GetmaxAttack();
@@ -693,6 +691,13 @@ GAME_STATUS Battle::runTimeStep()
 	{
 		BCastle.sendSS(getMaxEnemDist());
 	}
+
+
+	if (BCastle.GetHealth() == 0 && EnemyCount == Q_Killed.getC())
+		return DRAWN;
+	//Check if the castle destroyed return loss
+	if (BCastle.GetHealth() == 0)
+		return LOSS;
 
 	//check if all enemies killed return win
 	if (EnemyCount == Q_Killed.getC())

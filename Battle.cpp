@@ -336,7 +336,7 @@ void Battle::ExportOutputFile(GAME_STATUS gameStatus)
 		fout << endl;
 	}
 
-	fout << BCastle.getTotalDamage() << endl;
+	fout << "Castle Total Damage = " << BCastle.getTotalDamage() << endl;
 
 	if (gameStatus == WIN)
 	{

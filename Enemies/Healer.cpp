@@ -14,7 +14,7 @@ void Healer::Move()
 	{
 		if (Distance - MinDistance < getSpeed())
 		{
-			Distance = getSpeed() - Distance + MinDistance;
+			Distance = MinDistance;
 			movingDirection = 1;
 		}
 		else
@@ -26,7 +26,8 @@ void Healer::Move()
 	{
 		if (MaxDistance - Distance < getSpeed())
 		{
-			Distance = MaxDistance - (getSpeed() - Distance);
+			Distance = MaxDistance;
+			movingDirection = 0;
 		}
 		else
 		{
@@ -37,8 +38,6 @@ void Healer::Move()
 
 void Healer::healEnemy(Enemy* enemy)
 {
-	if (firstShotTime == 0)
-		firstShotTime = Battle::getCurrentTimeStep();
 
 	int k;
 	int diff = abs(enemy->GetDistance() - Distance);

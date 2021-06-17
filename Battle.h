@@ -20,7 +20,7 @@ private:
 	int FighterCount=0, FreezerCount=0, HealerCount=0;
 	int KilledFighter=0, KilledFreezers=0, KilledHealer=0;
 	int FrostedFighter=0, FrostedFreezer=0, FrostedHealer=0;
-
+	int ActiveFighter=0, ActiveHealer=0, ActiveFreezer=0;
 	static int CurrentTimeStep;
 	//Enemy * BEnemiesForDraw[MaxEnemyCount]; // This Array of Pointers is used for drawing elements in the GUI
 								  			// No matter what list type you are using to hold enemies, 
@@ -30,10 +30,8 @@ private:
 											// then pass the pointers list to the GUI function
 
 	Queue<Enemy*> Q_Inactive;					//Queue of inactive enemies
-	Queue<Freezer*> Q_ActiveFreezer;			//Queue of Active Freezers
-	PriorityQueue<Fighter*> Q_ActiveFighter;		//Priority queue of active Fighters
-	ArrayStack<Healer*> S_ActiveHealer;			//Stack of Active Healers
 	Queue<Enemy*> Q_Killed;						//Queue of killed Enemies
+	Queue<Enemy*> Q_Active;						//Queue of active Enemies
 	
 
 	/// ==> 

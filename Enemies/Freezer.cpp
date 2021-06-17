@@ -32,9 +32,6 @@ void Freezer::frostCastle(Castle* castle)
     if (getReloading() != 0) //must equal zero
         return;
 
-    if (firstShotTime == 0)
-        firstShotTime = Battle::getCurrentTimeStep();
-
     double k;
     if (currentHealth < 0.5 * originalHealth)
         k = 0.5;

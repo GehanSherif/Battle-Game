@@ -5,13 +5,14 @@
 
 Enemy::Enemy(int id, int arrTime, int enemyHealth, int enemyPower, int enemySpeed, int relPeriod)
 	: ID(id), ArrvTime(arrTime), originalHealth(enemyHealth), power(enemyPower), speed(enemySpeed), reloadPeriod(relPeriod)
-	, frostThreshold(0), totalFrostedTime(relPeriod)
+	, frostThreshold(0.3*originalHealth), totalFrostedTime(relPeriod)
 {
 	SetStatus(INAC);
 	Distance = MaxDistance;
 	timeToEndReload = 0;
 	currentFrost = 0;
 	timeTogetUnfrosted = 0;
+	currentHealth = enemyHealth;
 }
 
 int Enemy::GetID() const
@@ -36,7 +37,7 @@ bool Enemy::recieveDamage(double damage)
 {
 	currentHealth -= damage;
 	if (firstShotTime == 0)
-		firstShotTime == Battle::getCurrentTimeStep();
+		firstShotTime = Battle::getCurrentTimeStep();
 	if (currentHealth <= 0)
 	{
 		currentHealth = 0;
@@ -66,7 +67,7 @@ bool Enemy::reduceFrostedTime()
 bool Enemy::recieveFrost(double frost)
 {
 	if (firstShotTime == 0)
-		firstShotTime == Battle::getCurrentTimeStep();
+		firstShotTime = Battle::getCurrentTimeStep();
 	if (currentFrost + frost >= frostThreshold)
 	{
 		currentFrost = 0;
